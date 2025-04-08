@@ -1,4 +1,6 @@
 const { userService } = require('../services');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
 
 const userController = {
     getAllUsers: async (req, res) => {
@@ -13,8 +15,15 @@ const userController = {
         try {
             const { email, password } = req.body;
             const user = await userService.login({ email, password });
+
             if (user) {
-                res.json({ message: 'Login successful', user });
+                const token = jwt.sign(
+                    { id: user._id, name: user.name, email: user.email },
+                    JWT_SECRET,
+                    { expiresIn: '1h' }
+                );
+
+                res.json({ message: 'Login successful', token });
             } else {
                 res.status(401).json({ message: 'Invalid credentials' });
             }
