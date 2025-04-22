@@ -23,7 +23,14 @@ const userController = {
                     { expiresIn: '1h' }
                 );
 
-                res.json({ message: 'Login successful', token });
+                res.cookie('token', token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production', // Set this to true if using HTTPS
+                    maxAge: 60 * 60 * 1000,
+                    sameSite: 'lax',
+                });
+
+                return res.json({ message: 'Login successful' });
             } else {
                 res.status(401).json({ message: 'Invalid credentials' });
             }
@@ -57,6 +64,14 @@ const userController = {
         } catch (error) {
             res.status(500).json({ message: 'Server error', error: error.message });
         }
+    },
+    logout: (req, res) => {
+        res.clearCookie('token', {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production'
+        });
+        res.redirect('/login');
     }
 };
 

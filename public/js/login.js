@@ -13,16 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password }),
+                credentials: 'include'
             });
 
             const data = await res.json();
 
             if (res.ok) {
-                localStorage.setItem('token', data.token);
-
-                console.log('Login successful:', data);
-                window.location.href = '/home';
+                window.location.href = '/';
             } else {
                 alert(data.message || 'Login failed');
             }

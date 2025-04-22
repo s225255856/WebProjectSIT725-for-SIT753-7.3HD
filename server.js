@@ -1,3 +1,4 @@
+const cookieParser = require('cookie-parser');
 const express = require('express');
 const path = require('path');
 const connectDB = require('./db');
@@ -7,6 +8,13 @@ const port = 3000;
 
 app.use(express.json());
 
+const cors = require('cors');
+app.use(cookieParser());
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
