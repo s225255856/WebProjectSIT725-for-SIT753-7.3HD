@@ -44,9 +44,10 @@
 
                 <li>
                     <a class="dropdown-trigger" href="#" data-target="user-dropdown" data-position="bottom">
-                        <% if (user.avatarUrl) { %>
-                            <img src="<%= user.avatarUrl %>" alt="Avatar" class="circle responsive-img"
+                        <% if (user.avatar!==null) { %>
+                            <img src="/uploads/<%= user.avatar %>" alt="Avatar" class="circle responsive-img"
                                 style="width: 40px; height: 40px; vertical-align: middle;">
+
                             <% } else { %>
                                 <div class="avatar-circle">
                                     <%= user.name.charAt(0).toUpperCase() %>
@@ -67,7 +68,7 @@
     <li><a href="/">Home</a></li>
     <li><a href="/about">About</a></li>
     <% if (user) { %>
-        <li><a href="/profile">Profile</a></li>
+        <li><a href="/settings">Settings</a></li>
         <li><a href="/api/users/logout">Logout</a></li>
         <% } else { %>
             <li><a href="/login">Login</a></li>
@@ -76,7 +77,7 @@
 </ul>
 
 <ul id="user-dropdown" class="dropdown-content">
-    <li><a href="/profile"><i class="material-icons">settings</i>Settings</a></li>
+    <li><a href="/settings"><i class="material-icons">settings</i>Settings</a></li>
     <li class="divider" tabindex="-1"></li>
     <li><a href="/api/users/logout"><i class="material-icons">exit_to_app</i>Logout</a></li>
 </ul>

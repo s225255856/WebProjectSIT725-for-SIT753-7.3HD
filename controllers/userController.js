@@ -1,6 +1,8 @@
 const { userService } = require('../services');
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
+const path = require('path');
+const fs = require('fs');
+const signJWT = require('../helpers/signJWT');
 
 const userController = {
     getAllUsers: async (req, res) => {
@@ -17,15 +19,12 @@ const userController = {
             const user = await userService.login({ email, password });
 
             if (user) {
-                const token = jwt.sign(
-                    { id: user._id, name: user.name, email: user.email },
-                    JWT_SECRET,
-                    { expiresIn: '1h' }
-                );
+                const token = signJWT(
+                    { id: user._id, name: user.name, email: user.email, avatar: user.avatar })
 
                 res.cookie('token', token, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production', // Set this to true if using HTTPS
+                    secure: process.env.NODE_ENV === 'production',
                     maxAge: 60 * 60 * 1000,
                     sameSite: 'lax',
                 });
@@ -56,13 +55,47 @@ const userController = {
             res.status(500).json({ message: 'Server error', error: error.message });
         }
     },
-    changePassword: async (req, res) => {
+    updateSettings: async (req, res) => {
         try {
-            const { userId, newPassword } = req.body;
-            const updatedUser = await userService.changePassword(userId, newPassword);
-            res.json({ message: 'Password changed successfully', user: updatedUser });
+            const userId = req.user.id;
+            const { name, password, confirmPassword, removeAvatar } = req.body;
+            const avatar = req.file ? req.file.filename : undefined;
+
+            if (password && password !== confirmPassword) {
+                return res.status(400).json({ message: "Passwords do not match" });
+            }
+
+            let finalAvatar = req.user.avatar;
+
+
+            if (removeAvatar === 'on') {
+                if (req.user.avatar) {
+                    const avatarPath = path.join(__dirname, '..', 'public', 'uploads', req.user.avatar);
+                    if (fs.existsSync(avatarPath)) {
+                        fs.unlinkSync(avatarPath);
+                    }
+                }
+                finalAvatar = null;
+            }
+
+            if (avatar) {
+                finalAvatar = avatar;
+            }
+
+
+            const updatedUser = await userService.updateSettings(userId, {
+                name,
+                password,
+                avatar: finalAvatar
+            });
+
+            const token = jwt.sign({ id: updatedUser._id, name: updatedUser.name, avatar: updatedUser.avatar }, process.env.JWT_SECRET);
+            res.cookie('token', token, { httpOnly: true });
+
+            res.redirect('/');
+
         } catch (error) {
-            res.status(500).json({ message: 'Server error', error: error.message });
+            res.status(500).json({ message: "Server error", error: error.message });
         }
     },
     logout: (req, res) => {

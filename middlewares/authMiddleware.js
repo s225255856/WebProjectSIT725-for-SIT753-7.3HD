@@ -4,9 +4,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
 function authenticateToken(req, res, next) {
     const token = req?.cookies?.token;
     if (!token) {
-        console.log("skipping auth")
-        next();
-        return
+        if (!token) return res.redirect('/login');
     }
 
     try {

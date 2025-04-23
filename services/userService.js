@@ -75,23 +75,30 @@ const userService = {
             throw new Error(error.message);
         }
     },
+    updateSettings: async (userId, { name, password, avatar }) => {
+        const updates = {};
 
-    changePassword: async (userId, newPassword) => {
-        try {
-            const hashedPassword = await bcrypt.hash(newPassword, 10);
-            const updatedUser = await User.findByIdAndUpdate(
-                userId,
-                { password: hashedPassword },
-                { new: true }
-            );
-            if (!updatedUser) {
-                throw new Error('User not found');
-            }
-            return updatedUser;
-        } catch (error) {
-            throw new Error(error.message);
+
+        if (name && name.trim() !== '') {
+            updates.name = name.trim();
         }
-    }
+
+
+        if (password && password.trim() !== '') {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updates.password = hashedPassword;
+        }
+
+
+        if (avatar !== undefined) {
+            updates.avatar = avatar;
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true });
+        return updatedUser;
+    },
+
+
 };
 
 module.exports = userService;
