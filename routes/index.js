@@ -9,5 +9,4 @@ router.use('/', pageRouter);
 
 router.use('/api/users', usersRouter);
 
-
 module.exports = router;

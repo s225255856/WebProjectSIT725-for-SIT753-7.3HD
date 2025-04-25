@@ -11,10 +11,12 @@ app.use(express.json());
 const cors = require('cors');
 app.use(cookieParser());
 
-app.use(cors({
+app.use(
+  cors({
     origin: 'http://localhost:3000',
-    credentials: true
-}));
+    credentials: true,
+  }),
+);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -25,7 +27,6 @@ connectDB();
 
 app.use('/', routes);
 
-
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running at http://localhost:${port}`);
 });
