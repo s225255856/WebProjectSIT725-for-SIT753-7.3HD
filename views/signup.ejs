@@ -95,13 +95,13 @@
         <p id="error" class="error" style="color: red;"></p>
         <%- include('components/spinner') %>
             <form id="signup-form">
-                <input type="text" name="name" placeholder="Name" required />
-                <input type="email" name="email" placeholder="Email" required />
-                <input type="password" name="password" placeholder="Password" required />
-                <button type="submit" class="btn waves-effect waves-light">Create Account</button>
+                <input type="text" name="name" placeholder="Name" class="text-main" required />
+                <input type="email" name="email" placeholder="Email" class="text-main" required />
+                <input type="password" name="password" placeholder="Password" class="text-main" required />
+                <button type="submit" class="btn-primary">📝 Create Account</button>
             </form>
 
-            <p>Already have an account? <a href="/login">Log In</a></p>
+            <p>Already have an account? <a href="/login" class="text-main">Log In</a></p>
     </div>
 
     <!-- OTP Modal -->

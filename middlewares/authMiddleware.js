@@ -3,9 +3,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
 
 function authenticateToken(req, res, next) {
   const token = req?.cookies?.token;
-  if (!token) {
-    if (!token) return res.redirect('/login');
-  }
+  if (!token) return res.redirect('/login');
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
