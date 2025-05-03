@@ -124,7 +124,6 @@ input::placeholder {
   height: 150px;
   overflow-y: vertical; 
   box-sizing: border-box; 
-  font-family: inherit;
   font-size: 14px;
 }
 
