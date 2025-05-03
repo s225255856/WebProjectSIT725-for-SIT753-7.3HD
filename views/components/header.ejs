@@ -30,7 +30,7 @@
 </head>
 
 
-<nav  class="pink-red-main">
+<nav class="pink-red-main">
     <div class="nav-wrapper container">
         <a href="/" class="brand-logo">MyApp</a>
         <a href="#" data-target="mobile-nav" class="sidenav-trigger">
@@ -45,7 +45,8 @@
                 <li>
                     <a class="dropdown-trigger" href="#" data-target="user-dropdown" data-position="bottom">
                         <% if (user.avatar!==null) { %>
-                            <img src="/uploads/<%= user.avatar %>" alt="Avatar" class="circle responsive-img"
+                            <!-- <img src="/uploads/<%= user.avatar %>" alt="Avatar" class="circle responsive-img" -->
+                            <img src="<%= user.avatar %>" alt="Avatar" class="circle responsive-img"
                                 style="width: 40px; height: 40px; vertical-align: middle;">
 
                             <% } else { %>

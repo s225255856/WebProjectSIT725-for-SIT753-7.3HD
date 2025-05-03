@@ -1,5 +1,49 @@
-<%- include('components/header', { title: 'Log In' ,user }) %>
+<%- include('components/header', { title: 'Log In' , user }) %>
+    <style>
+        .btn-google {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            color: #4285F4;
+            border-radius: 5px;
+            padding: 12px 20px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            width: 100%;
+            max-width: 350px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
 
+            transition: all 0.3s ease-in-out;
+
+        }
+
+        .btn-google:hover {
+            background-color: #f1f1f1;
+
+            border-color: #ccc;
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .form-container a {
+            text-align: center;
+        }
+    </style>
     <div class="form-container">
         <h2>Log In</h2>
         <% if (error) { %>
@@ -8,15 +52,21 @@
             </p>
             <% } %>
 
-                <form>
+                <form action="/login" method="POST">
                     <input type="email" name="email" placeholder="Email" class="text-main" required />
                     <input type="password" name="password" placeholder="Password" class="text-main" required />
                     <button type="submit" class="btn-primary">🔐 Log In</button>
                 </form>
+
                 <p>Don't have an account? <a href="/signup" class="text-main">Sign Up</a></p>
+
+                <a href="/api/users/google" class="btn-google">
+                    <img src="https://www.gstatic.com/marketing-cms/assets/images/d5/dc/cfe9ce8b4425b410b49b7f2dd3f3/g.webp=s96-fcrop64=1,00000000ffffffff-rw"
+                        alt="Google" class="google-icon" />
+                    Log In with Google
+                </a>
     </div>
 
-    <!-- Page-specific JS here -->
     <script src="/js/login.js"></script>
 
     <%- include('components/footer') %>

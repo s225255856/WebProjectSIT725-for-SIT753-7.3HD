@@ -65,7 +65,7 @@ const userController = {
     try {
       const userId = req.user.id;
       const { name, password, confirmPassword, removeAvatar } = req.body;
-      const avatar = req.file ? req.file.filename : undefined;
+      let avatar = req.file ? `/uploads/${req.file.filename}` : undefined;
 
       if (password && password !== confirmPassword) {
         return res.status(400).json({ message: 'Passwords do not match' });

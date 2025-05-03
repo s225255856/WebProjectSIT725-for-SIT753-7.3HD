@@ -5,6 +5,7 @@ const connectDB = require('./db');
 const routes = require('./routes');
 const app = express();
 const port = 3000;
+const passport = require('./middlewares/passport');
 
 app.use(express.json());
 
@@ -17,6 +18,10 @@ app.use(
     credentials: true,
   }),
 );
+
+
+app.use(passport.initialize());
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
