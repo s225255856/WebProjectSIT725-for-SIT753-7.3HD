@@ -1,0 +1,9 @@
+const express = require('express');
+const router = express.Router();
+const { postController } = require('../controllers');
+const authMiddleware = require('../middlewares/authMiddleware');
+const upload = require('../middlewares/upload'); 
+
+//router.post('/addpost', authMiddleware, upload.any(), postController.addPost);
+
+module.exports = router;

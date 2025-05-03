@@ -19,4 +19,8 @@ router.get('/settings', authMiddleware, (req, res) => {
   res.render('userSetting', { error: null, user: req.user });
 });
 
+router.get('/addPost', authMiddleware, (req, res) => {
+  res.render('addPostCommunity', { error: null, user: req.user });
+});
+
 module.exports = router;

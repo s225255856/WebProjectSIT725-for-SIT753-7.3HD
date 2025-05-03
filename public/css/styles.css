@@ -85,3 +85,70 @@ input::placeholder {
 .card{
   color: var(--text-color);
 }
+
+/* -----Add Post to Community Page-----*/
+#add-post-title {
+  text-align: center;
+  color: var(--green-gold);
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-color);
+  margin-bottom: 30px;
+}
+
+.input-field {
+  margin-bottom: 20px;
+}
+
+.input-field label {
+  color: #5a4742;
+  font-weight: 500;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.input-field input{
+  background-color: #fffaf3;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.input-field textarea {
+  background-color: #fffaf3;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  height: 150px;
+  overflow-y: vertical; 
+  box-sizing: border-box; 
+  font-family: inherit;
+  font-size: 14px;
+}
+
+/* Responsiveness for input fields */
+.input-field input, .input-field textarea {
+  width: 100%;
+}
+
+textarea::placeholder {
+  color: var(--main-color); 
+  opacity: 0.6;
+}
+
+/* Wave Animation */
+@keyframes wave {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.wave-text {
+  display: inline-block;
+  animation: wave 1s ease-in-out infinite;
+}

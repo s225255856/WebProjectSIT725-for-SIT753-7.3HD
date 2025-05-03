@@ -5,8 +5,12 @@ const usersRouter = require('./userRoutes');
 
 const pageRouter = require('./pageRoutes');
 
+const postRouter = require('./postRoutes');
+
 router.use('/', pageRouter);
 
 router.use('/api/users', usersRouter);
+
+router.use('/api/posts', postRouter);
 
 module.exports = router;
