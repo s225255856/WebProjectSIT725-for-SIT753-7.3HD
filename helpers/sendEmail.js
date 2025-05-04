@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
 
 const sendEmail = async ({ to, subject, html }) => {
   await transporter.sendMail({
-    from: '"YourApp" <noreply@gmail.com>',
+    from: '"YourApp" <sit725gppj@gmail.com>',
     to,
     subject,
     html,

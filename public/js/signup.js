@@ -4,13 +4,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const spinner = document.getElementById('spinner');
   let emailForOtp = '';
 
+  const showError = (message) => {
+    errorDisplay.textContent = message;
+    errorDisplay.style.display = 'block';
+  };
+
+  const hideError = () => {
+    errorDisplay.textContent = '';
+    errorDisplay.style.display = 'none';
+  };
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    hideError();
 
     const email = form.email.value.trim();
 
     try {
-
       spinner.style.display = 'flex';
 
       const checkEmailRes = await fetch(
@@ -21,18 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ email }),
-        },
+        }
       );
 
       const checkEmailData = await checkEmailRes.json();
 
       if (!checkEmailRes.ok) {
-        errorDisplay.textContent =
-          checkEmailData.message || 'Email already exists.';
+        showError(checkEmailData.message || 'Email already exists.');
         spinner.style.display = 'none';
         return;
       }
-
 
       emailForOtp = email;
 
@@ -47,11 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const otpData = await otpRes.json();
 
       if (!otpRes.ok) {
-        errorDisplay.textContent = otpData.message || 'Failed to send OTP.';
+        showError(otpData.message || 'Failed to send OTP.');
         spinner.style.display = 'none';
         return;
       }
-
 
       const otpModal = document.getElementById('otp-modal');
       otpModal.style.display = 'flex';
@@ -59,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
       spinner.style.display = 'none';
     } catch (err) {
       console.error(err);
-      errorDisplay.textContent = 'Something went wrong. Please try again.';
+      showError('Something went wrong. Please try again.');
       spinner.style.display = 'none';
     }
   });
@@ -68,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const otpField = document.getElementById('otp');
 
   otpSubmitBtn.addEventListener('click', async () => {
+    hideError();
     const otp = otpField.value.trim();
 
     if (otp.length === 6) {
@@ -82,13 +90,12 @@ document.addEventListener('DOMContentLoaded', () => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({ email: emailForOtp, otp }),
-          },
+          }
         );
 
         const otpData = await otpRes.json();
 
         if (otpRes.ok) {
-
           const userCreationRes = await fetch(
             'http://localhost:3000/api/users/signup',
             {
@@ -101,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 name: form.name.value.trim(),
                 password: form.password.value,
               }),
-            },
+            }
           );
 
           const userCreationData = await userCreationRes.json();
@@ -110,27 +117,27 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Account created successfully!');
             window.location.href = '/login';
           } else {
-            errorDisplay.textContent =
-              userCreationData.message || 'User creation failed.';
+            showError(userCreationData.message || 'User creation failed.');
           }
         } else {
-          errorDisplay.textContent = otpData.message || 'Invalid OTP.';
+          showError(otpData.message || 'Invalid OTP.');
         }
 
         spinner.style.display = 'none';
       } catch (err) {
         console.error(err);
-        errorDisplay.textContent = 'Something went wrong while verifying OTP.';
+        showError('Something went wrong while verifying OTP.');
         spinner.style.display = 'none';
       }
     } else {
-      errorDisplay.textContent = 'Please enter a valid 6-digit OTP.';
+      showError('Please enter a valid 6-digit OTP.');
     }
   });
 
-  // Resend OTP
   const resendOtpBtn = document.getElementById('resend-otp');
   resendOtpBtn.addEventListener('click', async () => {
+    hideError();
+
     try {
       spinner.style.display = 'flex';
 
@@ -142,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ email: emailForOtp }),
-        },
+        }
       );
 
       const resendData = await resendRes.json();
@@ -150,14 +157,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (resendRes.ok) {
         alert('OTP resent to your email.');
       } else {
-        errorDisplay.textContent =
-          resendData.message || 'Failed to resend OTP.';
+        showError(resendData.message || 'Failed to resend OTP.');
       }
 
       spinner.style.display = 'none';
     } catch (err) {
       console.error(err);
-      errorDisplay.textContent = 'Something went wrong while resending OTP.';
+      showError('Something went wrong while resending OTP.');
       spinner.style.display = 'none';
     }
   });
