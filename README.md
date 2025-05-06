@@ -6,6 +6,7 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 
 - 🎁 Intelligent Gift Recommendations
 - 📅 Event Planning Assistant
+- 🌍 Gift Ideas Community
 - ✅ Event Marking and Tracking System
 - 🔐 User Authentication and Role Management
 
@@ -58,7 +59,12 @@ GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 ```
 
-4. Open your web broswer at
+4. To run the project, use this command:
+```
+npm run start
+```
+
+5. Open your web broswer at
 
 ```
 http://localhost:3000
