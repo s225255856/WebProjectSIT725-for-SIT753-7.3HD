@@ -17,6 +17,16 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 - **Database**: MongoDB
 - **Authentication**: JWT / Cookie-based sessions
 
+## 👨‍👩‍👧‍👦 Team Members
+
+| Name             | Student ID |
+| ---------------- | ---------- |
+| Tsz Hin Yee      | 223983938  |
+| Cynthia Wijaya   | 225138694  |
+| My Chi Nguyen    | 225255856  |
+| Nethmi Weeraman  | 224350062  |
+| Janaki Chaudhary | 224941505  |
+
 ## API Documentation
 /api/users
 - `GET` : Get all users
@@ -32,17 +42,6 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 
 /api/posts/addPost
 = `POST` : Upload new Post
-
-
-## 👨‍👩‍👧‍👦 Team Members
-
-| Name             | Student ID |
-| ---------------- | ---------- |
-| Tsz Hin Yee      | 223983938  |
-| Cynthia Wijaya   | 225138694  |
-| My Chi Nguyen    | 225255856  |
-| Nethmi Weeraman  | 224350062  |
-| Janaki Chaudhary | 224941505  |
 
 ## 🚀 Getting Started
 
