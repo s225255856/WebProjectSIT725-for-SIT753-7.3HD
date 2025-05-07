@@ -40,7 +40,7 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 /api/users/forget-password
 - `POST` : user forget password
 
-/api/posts/addPost
+/api/posts/addpost
 - `POST` : Upload new Post
 
 ## 🚀 Getting Started
