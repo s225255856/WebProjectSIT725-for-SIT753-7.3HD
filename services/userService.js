@@ -69,6 +69,7 @@ const userService = {
           expiresIn: '1h',
         },
       );
+
       const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
 
       await sendEmail({ to: email, subject: 'Password Reset', html: forgetPasswordEmail(resetLink) });
