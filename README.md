@@ -17,6 +17,23 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 - **Database**: MongoDB
 - **Authentication**: JWT / Cookie-based sessions
 
+## API Documentation
+/api/users
+- `GET` : Get all users
+
+/api/users/google
+- `GET` : Authenticate user login by Google
+
+/api/users/login
+- `POST` : User login
+
+/api/users/forget-password
+- `POST` : user forget password
+
+/api/posts/addPost
+= `POST` : Upload new Post
+
+
 ## 👨‍👩‍👧‍👦 Team Members
 
 | Name             | Student ID |
