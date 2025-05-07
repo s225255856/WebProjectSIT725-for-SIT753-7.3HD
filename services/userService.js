@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer');
 const OTPStore = new Map();
 const sendEmail = require('../helpers/sendEmail');
 const generateOtpHtml = require('../emailTemplate/OTPEmail');
+const forgetPasswordEmail = require('../emailTemplate/forgotPasswordEmail');
 
 const userService = {
   getAllUsers: async () => {
@@ -14,7 +15,13 @@ const userService = {
       throw new Error(error.message);
     }
   },
-
+  findById: async (id) => {
+    try {
+      return await User.find({ _id: id });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
   login: async ({ email, password }) => {
     try {
       const user = await User.findOne({ email });
@@ -56,29 +63,16 @@ const userService = {
       }
 
       const resetToken = jwt.sign(
-        { id: user._id },
+        { user: { id: user._id, name: user.name, email: user.email }, tokenType: 'reset' },
         process.env.JWT_SECRET || 'secret',
         {
           expiresIn: '1h',
         },
       );
+      const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
 
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'your-email@gmail.com',
-          pass: 'your-password',
-        },
-      });
+      await sendEmail({ to: email, subject: 'Password Reset', html: forgetPasswordEmail(resetLink) });
 
-      const resetLink = `http://yourfrontend.com/reset-password/${resetToken}`;
-
-      await transporter.sendMail({
-        from: '"Your App" <your-email@gmail.com>',
-        to: user.email,
-        subject: 'Password Reset',
-        text: `Click here to reset your password: ${resetLink}`,
-      });
     } catch (error) {
       throw new Error(error.message);
     }

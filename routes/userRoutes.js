@@ -36,6 +36,8 @@ router.get('/logout', userController.logout);
 router.post('/login', userController.login);
 router.post('/signup', userController.signup);
 router.post('/forget-password', userController.forgetPassword);
+
+router.post('/reset-password', userController.resetPassword);
 router.post(
   '/settings',
   authMiddleware,

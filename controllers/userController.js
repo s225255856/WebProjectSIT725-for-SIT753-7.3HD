@@ -61,6 +61,30 @@ const userController = {
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   },
+
+  resetPassword: async (req, res) => {
+    try {
+      const { token, password } = req.body;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+      if (decoded.tokenType !== 'reset') {
+        return res.status(400).json({ message: 'Invalid token type' });
+      }
+      const currentTime = Math.floor(Date.now() / 1000);
+      if (decoded.exp < currentTime) {
+        return res.status(400).json({ message: 'Token has expired' });
+      }
+      const userId = decoded.user.id;
+      const user = await userService.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      await userService.updateSettings(userId, { password });
+      res.json({ message: 'Password reset successful' });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  },
   updateSettings: async (req, res) => {
     try {
       const userId = req.user.id;
