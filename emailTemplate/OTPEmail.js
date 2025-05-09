@@ -27,7 +27,7 @@ const generateOtpHtml = (otp) => `
               </p>
               <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
               <p style="font-size: 12px; color: #888; text-align: center;">
-                &copy; ${new Date().getFullYear()} YourApp. All rights reserved.<br />
+                &copy; ${new Date().getFullYear()} Giftzy. All rights reserved.<br />
                 Our mailing address is: support@yourdomain.com
               </p>
             </td>
