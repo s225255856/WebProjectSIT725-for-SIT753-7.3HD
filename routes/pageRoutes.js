@@ -50,4 +50,8 @@ router.get('/secret-angel', authMiddleware, (req, res) => {
   res.render('secretAngel/index', { error: null, user: req.user });
 });
 
+router.get('/addPost', authMiddleware, (req, res) => {
+  res.render('addPostCommunity', { error: null, user: req.user });
+});
+
 module.exports = router;
