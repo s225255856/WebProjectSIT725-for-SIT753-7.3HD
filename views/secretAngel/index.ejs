@@ -1,6 +1,18 @@
-<%- include('../components/header', { title: 'The Secret Angel Game' , user }) %>
+<%- include('../components/header', { title: 'The Secret Angel Game' , user, rooms }) %>
+
     <div class="lobby-container">
         <h1 class="lobby-title">Lobby</h1>
+
+
+
+        <div class="room-list">
+            <% rooms.forEach(room=> { %>
+                <div class="room-card" style="background-color: <%- room.color %>;">
+                    <div>Room ID: <%- room.id %></div>
+                    <div>Host: <%- room.host %></div>
+                </div>
+                <% }); %>
+        </div>
 
         <div class="create-game-container">
             <div class="create-game-btn">Create A Game</div>
@@ -8,6 +20,7 @@
     </div>
 
     <%- include('../components/footer') %>
+
         <style>
             .lobby-container {
                 background-color: #263745;
@@ -37,5 +50,27 @@
                 font-size: 18px;
                 border-radius: 5px;
                 width: 200px;
+                cursor: pointer;
+            }
+
+            .room-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                height: 300px;
+                justify-content: center;
+                margin-top: 40px;
+
+                overflow: scroll;
+            }
+
+            .room-card {
+                width: 200px;
+                height: 100px;
+                padding: 20px;
+                color: black;
+                border-radius: 8px;
+                text-align: left;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             }
         </style>
