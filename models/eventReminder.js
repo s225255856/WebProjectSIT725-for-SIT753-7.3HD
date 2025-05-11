@@ -17,10 +17,6 @@ const eventReminderSchema = new mongoose.Schema(
             ref: 'User',
             required: true,
         }],
-        password: {
-            type: String,
-            required: false,
-        },
     },
     { timestamps: true }
 );

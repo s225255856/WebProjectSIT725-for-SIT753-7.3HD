@@ -50,4 +50,8 @@ router.get('/secret-angel', authMiddleware, (req, res) => {
   res.render('secretAngel/index', { error: null, user: req.user });
 });
 
+router.get('/event-reminder', authMiddleware, (req, res) => {
+  res.render('eventReminder/index', { error: null, user: req.user });
+});
+
 module.exports = router;
