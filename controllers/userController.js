@@ -65,7 +65,7 @@ const userController = {
   resetPassword: async (req, res) => {
     try {
       const { token, password } = req.body;
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
       if (decoded.tokenType !== 'reset') {
         return res.status(400).json({ message: 'Invalid token type' });
       }
@@ -129,7 +129,7 @@ const userController = {
           name: updatedUser.name,
           avatar: updatedUser.avatar,
         },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || 'default_secret',
       );
       res.cookie('token', token, { httpOnly: true });
 

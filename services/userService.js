@@ -64,7 +64,7 @@ const userService = {
 
       const resetToken = jwt.sign(
         { user: { id: user._id, name: user.name, email: user.email }, tokenType: 'reset' },
-        process.env.JWT_SECRET || 'secret',
+        process.env.JWT_SECRET || 'default_secret',
         {
           expiresIn: '1h',
         },

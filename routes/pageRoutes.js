@@ -26,7 +26,7 @@ router.get('/reset-password/:token', (req, res) => {
   const { token } = req.params;
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
     if (decoded.tokenType !== 'reset') {
       throw new Error('Invalid token type');
     }
