@@ -1,5 +1,9 @@
 <%- include('components/header', { title: 'GiftCommunity', user, categories }) %>
-
+<div class="row">
+    <p style="text-align: center;">
+        <h7 style="color: var(--green-gold); font-size: 30px;" class="wave-text">✨👋Welcome to Gift Ideas Community🎁💡</h7>
+    </p>
+</div>
 <!-- Tab Menu -->
   <div class="row">
     <div class="col l12">
@@ -15,11 +19,20 @@
     </div>
   </div>
 
-<%- include('components/footer') %>
+  <div class="row">
+    <a class="btn-floating btn-large red" style="position: fixed; bottom: 35%; right: 20px;">
+        <i class="large material-icons">add</i>
+    </a>
+  </div>
 
+<%- include('components/footer') %>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.tabs');
     M.Tabs.init(elems);
+  });
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.fixed-action-btn');
+    var instances = M.FloatingActionButton.init(elems, options);
   });
 </script>
