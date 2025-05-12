@@ -3,7 +3,7 @@ const {postService} = require('../services');
 const postController = {
     addPost: async (req, res) => {
         try {
-          const { title, description, category } = req.body;
+          const { title, description, category, notifcheckbox } = req.body;
           const user_id = req.user.id;
       
           if (!title || !description || !category) {
@@ -17,6 +17,8 @@ const postController = {
             return res.status(400).json({ success: false, message: 'Cover image is required.' });
           }
       
+          const getLikesNotif = notifcheckbox === 'on' || notifcheckbox === true;
+
           const newPost = await postService.createPost({
             user_id,
             title,
@@ -24,6 +26,7 @@ const postController = {
             category,
             cover_pic: `/uploads/${coverPic.filename}`,
             media: mediaFile ? `/uploads/${mediaFile.filename}` : "none",
+            get_likes_notif: getLikesNotif
           });
       
           return res.status(201).json({ success: true, message: 'Post shared successfully!', post: newPost });

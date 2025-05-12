@@ -26,6 +26,10 @@ const postSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  get_likes_notif:{
+    type: Boolean,
+    default: true,
+  },
   uploadedAt: {
     type: Date,
     default: Date.now,
