@@ -34,7 +34,27 @@ const postController = {
           console.error('Add post error:', error);
           return res.status(500).json({ success: false, message: 'An error occurred while sharing the post.' });
         }
+      },
+      getCommunityMainPage: async (req, res) => {
+      try{
+        const categoryNames = ['Wrapping Ideas', 'DIY Gifts', 'Eco-friendly Gifts', 'Seasonal Gifts'];
+
+        res.render('communityMainPage', {
+          error: null,
+          user: req.user,
+          categories: categoryNames
+        });
+
+      }catch (err) {
+        console.error(err);
+        res.render('communityMainPage', {
+          error: 'Failed to fetch posts',
+          user: req.user,
+          categories: []
+        });
       }
+
+    }
 }
 
 module.exports = postController;

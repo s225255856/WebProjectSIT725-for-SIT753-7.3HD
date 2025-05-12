@@ -1,0 +1,25 @@
+<%- include('components/header', { title: 'GiftCommunity', user, categories }) %>
+
+<!-- Tab Menu -->
+  <div class="row">
+    <div class="col l12">
+      <ul class="tabs">
+        <% categories.forEach((category, index) => { %>
+          <li class="tab col s3">
+            <a class="<%= index === 0 ? 'active' : '' %>" href="#<%= category.replace(/\s+/g, '_') %>">
+              <%= category %>
+            </a>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+  </div>
+
+<%- include('components/footer') %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.tabs');
+    M.Tabs.init(elems);
+  });
+</script>
