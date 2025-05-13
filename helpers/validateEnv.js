@@ -2,7 +2,6 @@ require('dotenv').config(); // Load .env variables early
 
 function validateEnv() {
     const requiredEnvVars = [
-        'APP_URL',
         'MONGO_URI',
         'JWT_SECRET',
         'GOOGLE_CLIENT_ID',
