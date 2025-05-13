@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
 const jwt = require('jsonwebtoken');
-const { SecretAngelGame } = require('../models/index');
-
+const secretAngelRouter = require('./pages/secretAngelPages');
 
 
 router.get('/', authMiddleware, (req, res) => {
@@ -47,11 +46,8 @@ router.get('/reset-password/:token', (req, res) => {
   }
 });
 
-router.get('/secret-angel', authMiddleware, async (req, res) => {
-  const rooms = await SecretAngelGame.find({ isDeleted: false }).populate('host', 'name _id')
-    .populate('members', 'name _id');
-  res.render('secretAngel/index', { error: null, user: req.user, rooms });
-});
+router.use('/secretAngel', authMiddleware, secretAngelRouter);
+
 
 router.get('/addPost', authMiddleware, (req, res) => {
   res.render('addPostCommunity', { error: null, user: req.user });

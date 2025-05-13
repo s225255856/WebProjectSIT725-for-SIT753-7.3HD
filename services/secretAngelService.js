@@ -1,4 +1,7 @@
 const { SecretAngelGame } = require('../models');
+const bcrypt = require('bcrypt');
+const secretAngelInviteEmail = require('../emailTemplate/secretAngelInviteEmail');
+const sendEmail = require('../helpers/sendEmail');
 
 const secretAngelService = {
 
@@ -34,7 +37,11 @@ const secretAngelService = {
             const game = new SecretAngelGame({
                 ...gameData,
                 password: hashedPassword,
-                members: [gameData.host],
+                members: [{
+                    user: gameData.host,
+                    isHost: true,
+                    isReady: false
+                }],
                 roomId: newRoomId,
                 color: colors[Math.floor(Math.random() * colors.length)],
             });
@@ -47,22 +54,24 @@ const secretAngelService = {
         }
     },
 
-    joinGame: async (roomId, userId, password) => {
+    joinGame: async (roomId, userId, password, bypass = false) => {
         try {
             const game = await SecretAngelGame.findOne({ roomId });
             if (!game) return { success: false, message: 'Game not found' };
 
-            const isMatch = await bcrypt.compare(password, game.password);
-            if (!isMatch) return { success: false, message: 'Incorrect password' };
+            if (game.password && !bypass) {
+                const isMatch = await bcrypt.compare(password, game.password);
+                if (!isMatch) throw new Error('Invalid password');
+            }
 
-            if (!game.members.includes(userId)) {
-                game.members.push(userId);
+            if (!game.members.map(el => el.user.toString()).includes(userId.toString())) {
+                game.members.push({ user: userId, isHost: false, isReady: false });
                 await game.save();
             }
-            return { success: true, message: 'Joined successfully' };
+            return { success: true, message: 'Joined successfully', game };
         } catch (err) {
             console.error(err);
-            return { success: false, message: 'Server error' };
+            throw new Error(err.message);
         }
     },
     startGame: async (gameId) => {
@@ -82,19 +91,36 @@ const secretAngelService = {
     },
     getAllGames: async () => {
         try {
-            return await SecretAngelGame.find().populate('host members');
+            return await SecretAngelGame.find({ isDeleted: false })
+                .populate('host', 'name _id')
+                .populate('members', 'name _id');
         } catch (error) {
             throw new Error(error.message);
         }
     },
 
 
-    getGameById: async (gameId) => {
+    getSingleGame: async (params) => {
         try {
-            return await SecretAngelGame.findById(gameId).populate('host members');
+            return await SecretAngelGame.findOne(params).populate('host members.user');
         } catch (error) {
             throw new Error(error.message);
         }
+    },
+    invitePlayer: async (roomId, emailList) => {
+
+        try {
+            const game = await SecretAngelGame.findOne({ roomId });
+            if (!game) throw new Error('Game not found');
+            const inviteLink = `http://localhost:3000/secretAngel/room/${roomId}/${game._id}`;
+            for (const email of emailList) {
+                await sendEmail({ to: email, subject: "Invitaiton email for a secret Angel Game", html: secretAngelInviteEmail(inviteLink) });
+            }
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
+
     },
 
 
@@ -107,8 +133,17 @@ const secretAngelService = {
             throw new Error(error.message);
         }
     },
-
-
+    checkKey: async ({ roomId, key }) => {
+        try {
+            const game = await SecretAngelGame.findOne({ roomId });
+            if (!game) return false;
+            const isMatch = game._id.toString() === key
+            if (!isMatch) return false;
+            return true;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
     deleteGame: async (gameId) => {
         try {
             const game = await SecretAngelGame.findByIdAndDelete(gameId);

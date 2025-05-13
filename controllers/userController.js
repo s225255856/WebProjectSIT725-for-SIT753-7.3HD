@@ -38,7 +38,7 @@ const userController = {
         res.status(401).json({ message: 'Invalid credentials' });
       }
     } catch (error) {
-      res.status(500).json({ message: 'Server error', error: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
   signup: async (req, res) => {

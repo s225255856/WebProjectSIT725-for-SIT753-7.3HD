@@ -6,7 +6,8 @@ const routes = require('./routes');
 const app = express();
 const port = 3000;
 const passport = require('./middlewares/passport');
-
+const validateEnv = require('./helpers/validateEnv');
+validateEnv()
 app.use(express.json());
 
 const cors = require('cors');

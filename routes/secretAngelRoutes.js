@@ -9,6 +9,7 @@ router.get('/', authMiddleware, secretAngelController.getAllGames);
 
 router.post('/', authMiddleware, secretAngelController.createGame);
 
+router.post('/invite', authMiddleware, secretAngelController.invitePlayer);
 
 router.get('/:id', authMiddleware, secretAngelController.getGameById);
 

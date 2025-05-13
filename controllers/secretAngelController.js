@@ -48,8 +48,18 @@ const secretAngelController = {
         try {
             const roomId = req.params.roomId;
             const userId = req.user.id;
-            const updatedGame = await secretAngelService.joinGame(roomId, userId);
+            const password = req.body.password;
+            const updatedGame = await secretAngelService.joinGame(roomId, userId, password);
             return res.status(200).json(updatedGame);
+        } catch (error) {
+            return res.status(400).json({ error: error.message });
+        }
+    },
+    invitePlayer: async (req, res) => {
+        try {
+            const { roomId, emails } = req.body;
+            const inviteLink = await secretAngelService.invitePlayer(roomId, emails);
+            return res.status(200).json({ inviteLink });
         } catch (error) {
             return res.status(400).json({ error: error.message });
         }

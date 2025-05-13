@@ -16,10 +16,6 @@ body {
   margin: 0; /* Removes default margin */
 }
 
-main {
-  flex: 1;
-}
-
 /*----- Theming the components ------*/
 .btn-primary {
   background-color: var(--main-color);
@@ -84,10 +80,12 @@ input::placeholder {
 .card {
   color: var(--text-color);
 }
+
 html,
 body {
-  height: auto;
+  height: 100%;
   margin: 0;
+  padding: 0;
 }
 
 /* -----Add Post to Community Page-----*/
@@ -114,7 +112,7 @@ body {
   margin-bottom: 5px;
 }
 
-.input-field input{
+.input-field input {
   background-color: #fffaf3;
   padding: 12px;
   border-radius: 6px;
@@ -126,24 +124,26 @@ body {
   border-radius: 6px;
   border: 1px solid #ccc;
   height: 150px;
-  overflow-y: vertical; 
-  box-sizing: border-box; 
+  overflow-y: vertical;
+  box-sizing: border-box;
   font-size: 14px;
 }
 
 /* Responsiveness for input fields */
-.input-field input, .input-field textarea {
+.input-field input,
+.input-field textarea {
   width: 100%;
 }
 
 textarea::placeholder {
-  color: var(--main-color); 
+  color: var(--main-color);
   opacity: 0.6;
 }
 
 /* Wave Animation */
 @keyframes wave {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {

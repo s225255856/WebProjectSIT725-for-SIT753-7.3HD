@@ -1,0 +1,234 @@
+<%- include('../components/header', { title: 'The Secret Angel Game' , user, room }) %>
+
+    <div class="room-container">
+        <div class="right-room-info-container">
+            <div class="participant-list">
+                <% if (room && room.members && room.members.length> 0) { %>
+                    <% room.members.forEach(function(member) { %>
+                        <div>
+                            <%= member.user.name %>
+                                <% if (member.isHost) { %>
+                                    (Host)
+                                    <% } %>
+                                        <% if (member.isReady) { %>
+                                            (Ready)
+                                            <% } %>
+                        </div>
+                        <% }); %>
+                            <% } else { %>
+                                <div>No participants yet.</div>
+                                <% } %>
+            </div>
+
+            <div style="margin-top: 40px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                <button class="action-btn" style="background-color: #F9DE72;" onclick="openModal()">Send Invitation
+                    Link</button>
+                <button class="action-btn" style="background-color: #BF7B7B;">Settings</button>
+                <button class="action-btn" style="background-color: #559A6A;">Start</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invitation Modal -->
+    <div id="invitationModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Invite Friends</h2>
+            <p>Enter email addresses and press Enter</p>
+
+            <div class="email-input-container">
+                <ul id="emailList"></ul>
+                <input type="email" id="inviteEmail" placeholder="Type an email and press Enter" />
+            </div>
+
+            <button onclick="sendInvitations()">Send Invitations</button>
+        </div>
+    </div>
+
+    <%- include('../components/footer') %>
+
+        <style>
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                width: 100%;
+            }
+
+            .room-container {
+                background-color: #263745;
+                display: flex;
+                justify-content: flex-end;
+                align-items: start;
+                height: 100%;
+            }
+
+            .right-room-info-container {
+                display: flex;
+                flex-direction: column;
+                height: 300px;
+                width: 200px;
+                gap: 20px;
+            }
+
+            .participant-list {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                background-color: #D9D9D9;
+                min-height: 100px;
+                width: 100%;
+                height: 100%;
+            }
+
+            .action-btn {
+                padding: 15px 25px;
+                border: none;
+                border-radius: 5px;
+                color: white;
+                font-size: 16px;
+                cursor: pointer;
+                margin: 20px 10px 0 10px;
+                min-width: 200px;
+            }
+
+            .action-btn:hover {
+                opacity: 0.9;
+            }
+
+            .modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 100vw;
+                background-color: rgba(0, 0, 0, 0.6);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
+
+            .modal-content {
+                position: relative;
+                background-color: white;
+                padding: 30px;
+                width: 100%;
+                height: 100%;
+                box-shadow: none;
+                border-radius: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .modal-content input {
+                width: 100%;
+                padding: 12px;
+                margin: 20px 0;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 16px;
+            }
+
+            .modal-content button {
+                padding: 12px 25px;
+                background-color: #559A6A;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            .modal-content button:hover {
+                background-color: #3e7a53;
+            }
+
+            .modal-content .close {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-size: 32px;
+            }
+
+            #emailList {
+                list-style: none;
+                padding: 0;
+                margin: 0 0 10px 0;
+            }
+
+            #emailList li {
+                background-color: #e0e0e0;
+                border-radius: 5px;
+                padding: 5px 10px;
+                margin: 5px 0;
+                font-size: 14px;
+            }
+        </style>
+
+        <script>
+            const roomId = "<%= room.roomId %>";
+            const modal = document.getElementById("invitationModal");
+            const emailInput = document.getElementById("inviteEmail");
+            const emailList = document.getElementById("emailList");
+            const collectedEmails = [];
+
+            function openModal() {
+                modal.style.display = "flex";
+                document.body.style.overflow = "hidden";
+            }
+
+            function closeModal() {
+                modal.style.display = "none";
+                document.body.style.overflow = "auto";
+            }
+
+            emailInput.addEventListener("keypress", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    const email = emailInput.value.trim();
+                    if (email && validateEmail(email)) {
+                        collectedEmails.push(email);
+                        addEmailToList(email);
+                        emailInput.value = "";
+                    } else {
+                        alert("Invalid email address.");
+                    }
+                }
+            });
+
+            function addEmailToList(email) {
+                const li = document.createElement("li");
+                li.textContent = email;
+                emailList.appendChild(li);
+            }
+
+            async function sendInvitations() {
+                if (collectedEmails.length === 0) {
+                    alert("Please enter at least one email.");
+                    return;
+                }
+
+                await fetch("/api/secretAngel/invite", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ roomId, emails: collectedEmails }),
+                });
+
+                // Example backend call simulation
+                alert("Invitations sent to:\n" + collectedEmails.join(", "));
+                // Clear list after sending
+                collectedEmails.length = 0;
+                emailList.innerHTML = "";
+                closeModal();
+            }
+
+            function validateEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            }
+        </script>

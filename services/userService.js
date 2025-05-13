@@ -26,7 +26,7 @@ const userService = {
     try {
       const user = await User.findOne({ email });
       if (!user) return null;
-
+      if (!user.password) throw new Error("Not available for using email and password login For This Account");
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return null;
 

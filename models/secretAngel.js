@@ -8,9 +8,19 @@ const secretAngelGameSchema = new mongoose.Schema(
             required: true,
         },
         members: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true,
+            user: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+                required: true,
+            },
+            isReady: {
+                type: Boolean,
+                default: false,
+            },
+            isHost: {
+                type: Boolean,
+                default: false,
+            }
         }],
         roomId: {
             type: Number,
