@@ -12,9 +12,13 @@ const secretAngelGameSchema = new mongoose.Schema(
             ref: 'User',
             required: true,
         }],
+        roomId: {
+            type: Number,
+            default: 1,
+        },
         budget: {
             type: Number,
-            required: true,
+            required: false,
         },
         assignment: {
             type: String,
@@ -31,6 +35,14 @@ const secretAngelGameSchema = new mongoose.Schema(
         password: {
             type: String,
             required: false,
+        },
+        color: {
+            type: String,
+            required: true,
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false,
         },
     },
     { timestamps: true }

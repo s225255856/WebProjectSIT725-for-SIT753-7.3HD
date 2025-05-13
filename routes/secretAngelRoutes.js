@@ -13,7 +13,7 @@ router.post('/', authMiddleware, secretAngelController.createGame);
 router.get('/:id', authMiddleware, secretAngelController.getGameById);
 
 
-router.put('/:id', authMiddleware, secretAngelController.updateGame);
+router.put('/:roomId/join', authMiddleware, secretAngelController.joinGame);
 
 
 router.delete('/:id', authMiddleware, secretAngelController.deleteGame);
