@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
 const jwt = require('jsonwebtoken');
+const { SecretAngelGame } = require('../models/index');
 
 
 
@@ -46,59 +47,9 @@ router.get('/reset-password/:token', (req, res) => {
   }
 });
 
-router.get('/secret-angel', authMiddleware, (req, res) => {
-  const colors = [
-    '#FF9F68',
-    '#72BDA3',
-    '#A16AE8',
-    '#FF6B6B',
-    '#FFD700',
-    '#4CAF50',
-    '#2196F3',
-    '#FF5722',
-    '#8E44AD',
-    '#F39C12',
-    '#2ECC71',
-    '#E74C3C',
-    '#1ABC9C',
-    '#3498DB',
-    '#F1C40F',
-    '#9B59B6',
-    '#34495E',
-    '#ECF0F1',
-    '#D35400',
-    '#BDC3C7',
-    '#34495E'
-  ];
-
-
-  const rooms = [
-    { id: 'room1', host: 'Alice' },
-    { id: 'room2', host: 'Bob' },
-    { id: 'room3', host: 'Charlie' },
-    { id: 'room4', host: 'David' },
-    { id: 'room5', host: 'Eve' },
-    { id: 'room6', host: 'Frank' },
-    { id: 'room7', host: 'Grace' },
-    { id: 'room8', host: 'Hannah' },
-    { id: 'room9', host: 'Isaac' },
-    { id: 'room10', host: 'Jack' },
-    { id: 'room11', host: 'Kathy' },
-    { id: 'room12', host: 'Liam' },
-    { id: 'room13', host: 'Mona' },
-    { id: 'room14', host: 'Nathan' },
-    { id: 'room15', host: 'Olivia' },
-    { id: 'room16', host: 'Paul' },
-    { id: 'room17', host: 'Quinn' },
-    { id: 'room18', host: 'Rachel' },
-    { id: 'room19', host: 'Steve' },
-    { id: 'room20', host: 'Tracy' }
-  ].map(room => ({
-    ...room,
-    color: colors[Math.floor(Math.random() * colors.length)]
-  }));
-
-
+router.get('/secret-angel', authMiddleware, async (req, res) => {
+  const rooms = await SecretAngelGame.find({ isDeleted: false }).populate('host', 'name _id')
+    .populate('members', 'name _id');
   res.render('secretAngel/index', { error: null, user: req.user, rooms });
 });
 

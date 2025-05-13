@@ -4,7 +4,7 @@ const secretAngelController = {
 
     createGame: async (req, res) => {
         try {
-            const gameData = req.body;
+            const gameData = { ...req.body, host: req.user.id };
             const newGame = await secretAngelService.createGame(gameData);
             return res.status(201).json(newGame);
         } catch (error) {
@@ -44,7 +44,16 @@ const secretAngelController = {
             return res.status(400).json({ error: error.message });
         }
     },
-
+    joinGame: async (req, res) => {
+        try {
+            const roomId = req.params.roomId;
+            const userId = req.user.id;
+            const updatedGame = await secretAngelService.joinGame(roomId, userId);
+            return res.status(200).json(updatedGame);
+        } catch (error) {
+            return res.status(400).json({ error: error.message });
+        }
+    },
 
     deleteGame: async (req, res) => {
         try {

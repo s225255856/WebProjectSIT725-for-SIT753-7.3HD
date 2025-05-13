@@ -5,10 +5,12 @@
 
         <div class="room-list">
             <% rooms.forEach(room=> { %>
-                <div class="room-card" style="background-color: <%- room.color %>;">
-                    <div>Room ID: <%- room.id %></div>
-                    <div>Host: <%- room.host %></div>
+                <div class="room-card" style="background-color: <%- room.color %>;"
+                    onclick="openJoinModal('<%- room.roomId %>')">
+                    <div>Room ID: <%- room.roomId %></div>
+                    <div>Host: <%- room.host.name %></div>
                 </div>
+
                 <% }) %>
         </div>
 
@@ -40,6 +42,26 @@
 
         </div>
     </div>
+
+    <div id="joinGameModal" class="modal-backdrop hidden">
+        <div class="modal">
+            <div class="modalTitle">Join Game</div>
+            <form id="joinGameForm">
+                <input type="hidden" id="joinRoomId" name="roomId" />
+
+                <div class="form-row">
+                    <label for="joinPassword">Password:</label>
+                    <input type="text" name="password" id="joinPassword" />
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="modal-btn">Join</button>
+                    <button type="button" id="closeJoinModalBtn" class="modal-btn cancel">Back</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <%- include('../components/footer') %>
 
@@ -216,4 +238,41 @@
                     }
                 });
             });
+
+            function openJoinModal(roomId) {
+                document.getElementById('joinRoomId').value = roomId;
+                document.getElementById('joinGameModal').classList.remove('hidden');
+            }
+
+            document.getElementById('closeJoinModalBtn').addEventListener('click', () => {
+                document.getElementById('joinGameModal').classList.add('hidden');
+            });
+
+
+            document.getElementById('joinGameForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const roomId = document.getElementById('joinRoomId').value;
+                const password = document.getElementById('joinPassword').value;
+
+                try {
+                    const res = await fetch(`/api/secretAngel/${roomId}/join`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ password })
+                    });
+
+                    if (res.ok) {
+                        window.location.reload();
+                    } else {
+                        alert("Incorrect password.");
+                    }
+                } catch (err) {
+                    console.error("Error:", err);
+                    alert("Server error.");
+                }
+
+            });
+
         </script>
