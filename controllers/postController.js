@@ -39,10 +39,18 @@ const postController = {
       try{
         const categoryNames = ['Wrapping Ideas', 'DIY Gifts', 'Eco-friendly Gifts', 'Seasonal Gifts'];
 
+        //Get 5 first posts from mongoDB per category 
+        const postsByCategory = {};
+
+        for (const cat of categoryNames) {
+          postsByCategory[cat] = await postService.getPostsByCat(cat);
+        }
+
         res.render('communityMainPage', {
           error: null,
           user: req.user,
-          categories: categoryNames
+          categories: categoryNames,
+          postsByCategory
         });
 
       }catch (err) {
@@ -50,7 +58,8 @@ const postController = {
         res.render('communityMainPage', {
           error: 'Failed to fetch posts',
           user: req.user,
-          categories: []
+          categories: [],
+          postsByCategory: {}
         });
       }
 

@@ -1,4 +1,4 @@
-<%- include('components/header', { title: 'GiftCommunity', user, categories }) %>
+<%- include('components/header', { title: 'GiftCommunity', user, categories, postsByCategory }) %>
 <div class="row">
     <p style="text-align: center;">
         <h7 style="color: var(--green-gold); font-size: 30px;" class="wave-text">✨👋Welcome to Gift Ideas Community🎁💡</h7>
@@ -25,7 +25,32 @@
     </a>
   </div>
 
+  <!-- Tab Content -->
+  <% categories.forEach((category, index) => { %>
+    <div id="<%= category.replace(/\s+/g, '_') %>" class="col s12">
+      <div class="row">
+        <% postsByCategory[category].forEach(post => { %>
+          <div class="col s12 m4 l3"> <!-- m2 untuk 5 kolom dalam satu row -->
+            <div class="card fixed-card">
+                <div class="card-image">
+                <img src="<%= post.cover_pic %>">
+                </div>
+                <div class="card-content">
+                <h7 style="font-size: 20px;" class="card-title truncate"><%= post.title %></h7>
+                <p class="truncate"><%= post.description %></p>
+                <p><%= post.total_likes %> likes</p>
+                </div>
+                <div class="card-action">
+                <a href="#">This is a link</a>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+  <% }) %>
 <%- include('components/footer') %>
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.tabs');
