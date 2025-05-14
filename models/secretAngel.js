@@ -30,18 +30,20 @@ const secretAngelGameSchema = new mongoose.Schema(
             type: Number,
             required: false,
         },
-        assignment: {
-            type: String,
-            required: false,
-        },
-        wishlist: {
-            type: [String],
-            required: false,
-        },
-        link: {
-            type: String,
-            required: false,
-        },
+        assignment: [
+            {
+                user: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'User',
+                    required: true,
+                },
+                secretAngel: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'User',
+                    required: true,
+                }
+            }
+        ],
         password: {
             type: String,
             required: false,
@@ -49,6 +51,11 @@ const secretAngelGameSchema = new mongoose.Schema(
         color: {
             type: String,
             required: true,
+        },
+        gameStatus: {
+            type: String,
+            enum: ['waiting', 'started', 'completed'],
+            default: 'waiting',
         },
         isDeleted: {
             type: Boolean,

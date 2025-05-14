@@ -1,8 +1,10 @@
-const { SecretAngelGame } = require('../models');
+const { SecretAngelGame, User } = require('../models');
 const bcrypt = require('bcrypt');
 const secretAngelInviteEmail = require('../emailTemplate/secretAngelInviteEmail');
 const sendEmail = require('../helpers/sendEmail');
-
+const fs = require('fs');
+const path = require('path');
+const ejs = require('ejs');
 const secretAngelService = {
 
     createGame: async (gameData) => {
@@ -76,22 +78,45 @@ const secretAngelService = {
     },
     startGame: async (gameId) => {
         try {
-            // const shuffledMembers = shuffleArray([...members]);
+            const game = await SecretAngelGame.findById(gameId);
+            if (!game) throw new Error('Game not found');
+            if (game.members.length < 2) throw new Error('Not enough players to start the game');
+            if (game.members.some(member => member.isReady === false && !member.isHost)) throw new Error('All players must be ready to start the game');
+            const shuffledMembers = shuffleArray([...game.members]);
 
-            // const assignments = members.map((member, index) => ({
-            //     user: member,
-            //     secretAngel: shuffledMembers[(index + 1) % shuffledMembers.length],
-            // }));
+            const assignments = game.members.map((member, index) => ({
+                user: member.user,
+                secretAngel: shuffledMembers[(index + 1) % shuffledMembers.length].user,
+            }));
 
-            // game.assignment = assignments;
+            game.assignment = assignments;
+            game.gameStatus = 'started';
+
+            await game.save();
+            return game;
 
         } catch (error) {
 
+            throw new Error(error.message);
+        }
+    },
+    toggleReadyToStart: async (gameId, userId) => {
+        try {
+            const game = await SecretAngelGame.findById(gameId);
+            if (!game) throw new Error('Game not found');
+            const memberIndex = game.members.findIndex(member => member.user.toString() === userId.toString());
+            console.log({ memberIndex })
+            if (memberIndex === -1) throw new Error('User not found in game');
+            game.members[memberIndex].isReady = !game.members[memberIndex].isReady;
+            await game.save();
+            return game;
+        } catch (error) {
+            throw new Error(error.message);
         }
     },
     getAllGames: async () => {
         try {
-            return await SecretAngelGame.find({ isDeleted: false })
+            return await SecretAngelGame.find({ isDeleted: false, gameStatus: { $ne: 'completed' } })
                 .populate('host', 'name _id')
                 .populate('members', 'name _id');
         } catch (error) {
@@ -102,7 +127,12 @@ const secretAngelService = {
 
     getSingleGame: async (params) => {
         try {
-            return await SecretAngelGame.findOne(params).populate('host members.user');
+            return await SecretAngelGame.findOne(params)
+                .populate({ path: 'host', select: '_id name' })
+                .populate({ path: 'members.user', select: '_id name' })
+                .populate({ path: 'assignment.user', select: '_id name' })
+                .populate({ path: 'assignment.secretAngel', select: '_id name' });
+
         } catch (error) {
             throw new Error(error.message);
         }
@@ -144,9 +174,38 @@ const secretAngelService = {
             throw new Error(error.message);
         }
     },
-    deleteGame: async (gameId) => {
+
+    revealResult: async (roomId) => {
         try {
-            const game = await SecretAngelGame.findByIdAndDelete(gameId);
+            const game = await SecretAngelGame.findOne({ roomId })
+                .populate({ path: 'assignment.user', select: '_id name' })
+                .populate({ path: 'assignment.secretAngel', select: '_id name' });
+
+            if (!game) throw new Error('Game not found');
+            const userIdList = game.members.map(member => member.user.toString());
+            const emailList = await User.find({ _id: { $in: userIdList } }, { email: 1 });
+
+            const templatePath = path.join(__dirname, '../emailTemplate/secretAngelResultEmail.ejs');
+            const templateStr = fs.readFileSync(templatePath, 'utf8');
+            const html = ejs.render(templateStr, {
+                assignments: game.assignment
+            });
+
+            for (const { email } of emailList) {
+                await sendEmail({ to: email, subject: "Secret Angel Game Result", html });
+            }
+
+            game.gameStatus = 'completed';
+            await game.save();
+            return
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    },
+    deleteGame: async (id) => {
+        try {
+            const game = await SecretAngelGame.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
             if (!game) throw new Error('Game not found');
             return game;
         } catch (error) {

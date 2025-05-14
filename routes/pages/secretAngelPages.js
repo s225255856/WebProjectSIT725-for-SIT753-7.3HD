@@ -31,6 +31,7 @@ router.get('/room/:roomId/:key', async (req, res) => {
         await secretAngelService.joinGame(roomId, req.user.id, null, true);
 
         const room = await secretAngelService.getSingleGame({ roomId });
+
         res.render('secretAngel/room', { error: null, user: req.user, room });
     } catch (error) {
         console.error(error);

@@ -12,7 +12,15 @@ const secretAngelController = {
         }
     },
 
-
+    startGame: async (req, res) => {
+        try {
+            const gameId = req.params.id;
+            const game = await secretAngelService.startGame(gameId);
+            return res.status(200).json(game);
+        } catch (error) {
+            return res.status(400).json({ error: error.message });
+        }
+    },
     getAllGames: async (req, res) => {
         try {
             const games = await secretAngelService.getAllGames();
@@ -21,18 +29,16 @@ const secretAngelController = {
             return res.status(400).json({ error: error.message });
         }
     },
-
-
-    getGameById: async (req, res) => {
+    toggleReadyToStart: async (req, res) => {
         try {
             const gameId = req.params.id;
-            const game = await secretAngelService.getGameById(gameId);
-            return res.status(200).json(game);
+            const userId = req.user.id;
+            const updatedGame = await secretAngelService.toggleReadyToStart(gameId, userId);
+            return res.status(200).json(updatedGame);
         } catch (error) {
             return res.status(400).json({ error: error.message });
         }
     },
-
 
     updateGame: async (req, res) => {
         try {
@@ -64,11 +70,20 @@ const secretAngelController = {
             return res.status(400).json({ error: error.message });
         }
     },
+    revealResult: async (req, res) => {
+        try {
+            const roomId = req.params.roomId;
+            const result = await secretAngelService.revealResult(roomId);
+            return res.status(200).json(result);
+        } catch (error) {
+            return res.status(400).json({ error: error.message });
+        }
+    },
 
     deleteGame: async (req, res) => {
         try {
-            const gameId = req.params.id;
-            const deletedGame = await secretAngelService.deleteGame(gameId);
+            const { id } = req.params;
+            const deletedGame = await secretAngelService.deleteGame(id);
             return res.status(200).json(deletedGame);
         } catch (error) {
             return res.status(400).json({ error: error.message });
