@@ -1,6 +1,13 @@
 const secretAngelService = require('../services/secretAngelService');
 
 module.exports = (io, socket) => {
+
+    socket.on('createGame', async (data) => {
+        const rooms = await secretAngelService.getAllGames()
+        io.emit('roomList', rooms);
+    });
+
+
     socket.on("joinRoom", async ({ roomId, userName }) => {
         socket.join(`room-${roomId}`);
         io.to(`room-${roomId}`).emit("systemMessage", `${userName} joined the room`);

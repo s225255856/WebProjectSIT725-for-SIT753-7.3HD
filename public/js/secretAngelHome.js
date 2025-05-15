@@ -1,3 +1,10 @@
+const socket = io();
+
+function openJoinModal(roomId) {
+    document.getElementById('joinRoomId').value = roomId;
+    document.getElementById('joinGameModal').classList.remove('hidden');
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("createGameModal");
     const openBtn = document.querySelector(".create-game-btn");
@@ -11,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
     closeBtn.addEventListener("click", () => {
         modal.classList.add("hidden");
     });
+
+
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -27,7 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (res.ok) {
-                window.location.reload();
+                socket.emit('createGame');
+                modal.classList.add('hidden');
             } else {
                 alert("Error creating game.");
             }
@@ -37,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Join Modal Logic
     document.getElementById('closeJoinModalBtn').addEventListener('click', () => {
         document.getElementById('joinGameModal').classList.add('hidden');
     });
@@ -71,7 +80,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-function openJoinModal(roomId) {
-    document.getElementById('joinRoomId').value = roomId;
-    document.getElementById('joinGameModal').classList.remove('hidden');
-}
+
+
+socket.on('roomList', (rooms) => {
+    const roomListDiv = document.querySelector('.room-list');
+    roomListDiv.innerHTML = ''; // Clear existing
+
+    rooms.forEach(room => {
+        const div = document.createElement('div');
+        div.className = 'room-card';
+        div.style.backgroundColor = room.color;
+        div.onclick = () => openJoinModal(room.roomId);
+        div.innerHTML = `
+            <div>Room ID: ${room.roomId}</div>
+            <div>Host: ${room.host.name}</div>
+        `;
+        roomListDiv.appendChild(div);
+    });
+});
