@@ -1,11 +1,11 @@
 
 <%- include('../components/header', { title: 'Event Reminder' , user }) %>
-    <div class="calendar-container">
+   <div class="calendar-container">
         <div class="row">
             <div id='calendar'></div>
         </div>
     </div>
-    <div id="modal1" class="modal modal-fixed-footer">
+    <!-- <div id="modal1" class="modal modal-fixed-footer">
         <div class="row modal-content">
             <form class="col s12">
                 <div class="row">
@@ -36,16 +36,33 @@
                 </div>
             </form>
         </div>
-    </div>
+    </div> -->
 
-<!-- <%- include('../components/footer') %> -->
+<%- include('../components/footer') %>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+       document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             navLinks: true, // can click day/week names to navigate views
+            selectable: true,
+            select: function(info) {
+				let event_name = prompt("Enter event name: ");
+                if (event_name) {
+                    calendar.addEvent({
+                        title: event_name,
+                        start: info.start,
+                        end: info.end
+                    })
+                }
+			},
+            eventClick: function(info) {
+                if (confirm('Delete this event?')) {
+                    info.event.remove();
+                }
+            },
+            //events: events,
             editable: true,
             dayMaxEvents: true, // allow "more" link when too many events
             });
@@ -54,11 +71,30 @@
 </script>
 
 <style>
+    :root {
+        --fc-small-font-size: .85em;
+        --fc-page-bg-color: #f19393;
+        --fc-neutral-bg-color: rgba(148, 53, 53, 0.3);
+        --fc-neutral-text-color: #951515;
+        --fc-border-color: var(--main-color);
+
+        --fc-button-text-color: #fff;
+        --fc-button-bg-color: var(--main-color);
+        --fc-button-border-color: #2C3E50;
+        --fc-button-hover-bg-color: #1e2b37;
+        --fc-button-hover-border-color: #1a252f;
+        --fc-button-active-bg-color: #1a252f;
+        --fc-button-active-border-color: #151e27;
+    }
+
     .calendar-container {
-        background-color: #d9be84;
+        background-color: var(--secondary-color);
         text-align: center;
         height: 100%;
+        overflow: auto;
+        padding: 5%;
     }
+
 
     .title {
         font-size: 36px;
