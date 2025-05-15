@@ -57,6 +57,12 @@ const secretAngelGameSchema = new mongoose.Schema(
             enum: ['waiting', 'started', 'completed'],
             default: 'waiting',
         },
+        chat: [{
+            sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
+            isSystem: { type: Boolean, default: false },
+            message: String,
+            createdAt: { type: Date, default: Date.now }
+        }],
         isDeleted: {
             type: Boolean,
             default: false,

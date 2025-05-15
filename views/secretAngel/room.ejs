@@ -1,468 +1,158 @@
 <%- include('../components/header', { title: 'The Secret Angel Game' , user, room }) %>
-
+    <link rel="stylesheet" href="/css/secretAngelRoom.css" />
     <div class="room-container">
-        <% if (room && room.budget !=null) { %>
-            <div style="font-size:50px; color:white; position: absolute; top:20px; left: 20px;">
-                <strong>Budget: </strong> $<%=room.budget %>
-            </div>
-            <% } %>
-                <div class="image-container">
-                    <% if (room.assignment && room.assignment.length> 0) { %>
-                        <div class="assignment-cards">
-                            <% let myAssignment=null; if (room.gameStatus==='started' ) {
-                                myAssignment=room.assignment.find(pair=>
-                                pair.secretAngel && pair.secretAngel._id &&
-                                pair.secretAngel._id.toString() === user.id.toString()
-                                );
-                                }
-                                %>
 
-                                <% if (myAssignment) { %>
-                                    <div class="assignment-card">
-                                        <div>Your Target:</div>
-                                        <div>
-                                            <%= myAssignment.user.name %>
-                                        </div>
-                                    </div>
-                                    <% } else { %>
-
-                                        <% } %>
-                        </div>
-
-                        <% } else { %>
-                            <img src="/gift.png" alt="Secret Angel" class="gift-image" />
-                            <% } %>
-                </div>
-
-                <div class=" right-room-info-container">
-                    <div class="participant-list">
-                        <% if (room && room.members && room.members.length> 0) { %>
-                            <% room.members.forEach(function(member) { %>
-                                <div>
-                                    <%= member.user.name %>
-                                        <% if (member.isHost) { %>
-                                            (Host)
-                                            <% } %>
-                                                <% if (member.isReady) { %>
-                                                    (Ready)
-                                                    <% } %>
-                                </div>
-                                <% }); %>
-                                    <% } else { %>
-                                        <div>No participants yet.</div>
-                                        <% } %>
-                    </div>
-
-                    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
-
-                        <% if (room.gameStatus==='waiting' ) { %>
-                            <button class="action-btn" style="background-color: #F9DE72;" onclick="openModal()">Send
-                                Invitation Link</button>
-                            <% } %>
-
-                                <button class="action-btn" style="background-color: #BF7B7B;"
-                                    onclick="openSettingsModal()">Settings</button>
-
-                                <% if (room.host._id.toString()===user.id && room.assignment?.length==0) { %>
-                                    <button class="action-btn" style="background-color: #559A6A;"
-                                        onclick="startGame()">Start</button>
-                                    <% } else if (room.assignment?.length!==0 && room.host._id.toString()===user.id ) {
-                                        %>
-                                        <button class="action-btn" style="background-color: #559A6A;"
-                                            onclick="revealResult()">Reveal Result</button>
-                                        <% } else if(room.gameStatus=='waiting' ) { %>
-                                            <button class="action-btn" style="background-color: #559A6A;"
-                                                onclick="toggleReadyToStart()">Ready</button>
-                                            <% } %>
-                    </div>
-
-
-                </div>
-    </div>
-
-    <div id="invitationModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Invite Friends</h2>
-            <p>Enter email addresses and press Enter</p>
-
-            <div class="email-input-container">
-                <ul id="emailList"></ul>
-                <input type="email" id="inviteEmail" placeholder="Type an email and press Enter" />
-            </div>
-
-            <button onclick="sendInvitations()">Send Invitations</button>
+        <div id="budgetDisplay" style="font-size:50px; color:white; position: absolute; top:20px; left: 20px;">
+            <% if (room && room.budget !=null) { %>
+                <strong>Budget:</strong> $<%= room.budget %>
+                    <% } else { %>
+                        <!-- Empty or placeholder -->
+                        <% } %>
         </div>
-    </div>
 
-    <div id="settingsModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeSettingsModal()">&times;</span>
-            <h2>Game Settings</h2>
+        <div class="image-container">
+            <% if (room.assignment && room.assignment.length> 0) { %>
+                <div class="assignment-cards">
+                    <% let myAssignment=null; if (room.gameStatus==='started' ) {
+                        myAssignment=room.assignment.find(pair=>
+                        pair.secretAngel && pair.secretAngel._id &&
+                        pair.secretAngel._id.toString() === user.id.toString()
+                        );
+                        }
+                        %>
 
-            <label for="gameBudget">Set Budget:</label>
-            <input type="number" id="gameBudget" placeholder="Enter budget amount" />
+                        <% if (myAssignment) { %>
+                            <div class="assignment-card">
+                                <div>Your Target:</div>
+                                <div>
+                                    <%= myAssignment.user.name %>
+                                </div>
+                            </div>
+                            <% } else { %>
+                                <div style="font-size: 50px; color:white">
+                                    Result Revealed
+                                </div>
+                                <% } %>
+                </div>
+
+                <% } else { %>
+                    <img src="/gift.png" alt="Secret Angel" class="gift-image" />
+                    <% } %>
+        </div>
+
+        <div class=" right-room-info-container">
+            <div class="participant-list" id="participantList">
+                <% if (room && room.members && room.members.length> 0) { %>
+                    <% room.members.forEach(function(member) { %>
+                        <div>
+                            <%= member.user.name %>
+                                <% if (member.isHost) { %> (Host) <% } %>
+                                        <% if (member.isReady) { %> (Ready) <% } %>
+                        </div>
+                        <% }); %>
+                            <% } else { %>
+                                <div>No participants yet.</div>
+                                <% } %>
+            </div>
+
 
             <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
-                <button onclick="submitSettings()">Submit</button>
 
-                <% if (room && user && room.host._id.toString()==user.id) { %>
-                    <button onclick="deleteGame()" style="background-color: #BF7B7B;">Delete
-                        Game</button>
+                <% if (room.gameStatus==='waiting' ) { %>
+                    <button class="action-btn" style="background-color: #F9DE72;" onclick="openModal()">Send
+                        Invitation Link</button>
                     <% } %>
+
+                        <button class="action-btn" style="background-color: #BF7B7B;"
+                            onclick="openSettingsModal()">Settings</button>
+
+                        <% if (room.host._id.toString()===user.id && room.assignment?.length==0) { %>
+                            <button class="action-btn" style="background-color: #559A6A;"
+                                onclick="startGame()">Start</button>
+                            <% } else if (room.assignment?.length!==0 && room.host._id.toString()===user.id ) { %>
+                                <button class="action-btn" style="background-color: #559A6A;"
+                                    onclick="revealResult()">Reveal Result</button>
+                                <% } else if(room.gameStatus=='waiting' ) { %>
+                                    <button class="action-btn" style="background-color: #559A6A;"
+                                        onclick="toggleReadyToStart()">Ready</button>
+                                    <% } %>
             </div>
 
+
         </div>
-    </div>
 
 
-    <%- include('../components/footer') %>
+        <div id="invitationModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Invite Friends</h2>
+                <p>Enter email addresses and press Enter</p>
 
-        <style>
-            html,
-            body {
-                margin: 0;
-                padding: 0;
-                height: 100%;
-                width: 100%;
-            }
+                <div class="email-input-container">
+                    <ul id="emailList"></ul>
+                    <input type="email" id="inviteEmail" placeholder="Type an email and press Enter" />
+                </div>
 
-            .gift-image {
-                justify-self: center;
-                width: 400px;
-                align-self: center;
-            }
+                <button onclick="sendInvitations()">Send Invitations</button>
+            </div>
+        </div>
 
-            .room-container {
-                background-color: #263745;
-                display: flex;
-                justify-content: space-between;
-                align-items: start;
-                height: 100%;
-                position: relative;
-            }
+        <div id="settingsModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeSettingsModal()">&times;</span>
+                <h2>Game Settings</h2>
 
-            .image-container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 100%;
-                height: 100%;
-            }
+                <label for="gameBudget">Set Budget:</label>
+                <input type="number" id="gameBudget" placeholder="Enter budget amount" />
 
-            .right-room-info-container {
-                display: flex;
-                flex-direction: column;
-                height: 300px;
-                width: 200px;
-            }
+                <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                    <button onclick="submitSettings()">Submit</button>
 
-            .participant-list {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                background-color: #D9D9D9;
-                min-height: 100px;
-                width: 100%;
-                height: 100%;
-            }
+                    <% if (room && user && room.host._id.toString()==user.id) { %>
+                        <button onclick="deleteGame()" style="background-color: #BF7B7B;">Delete
+                            Game</button>
+                        <% } %>
+                </div>
 
-            .action-btn {
-                padding: 15px 25px;
-                border: none;
-                border-radius: 5px;
-                color: white;
-                font-size: 16px;
-                cursor: pointer;
-                min-width: 200px;
-            }
+            </div>
+        </div>
 
-            .action-btn:hover {
-                opacity: 0.9;
-            }
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header" onclick="toggleChat()">
+                Chat
+            </div>
+            <div class="chat-body" id="chatBody">
+                <div id="messages">
+                    <% room.chat.filter(el=>!el.isSystem).forEach(msg=> { %>
+                        <div class="chat-message">
+                            <strong>
+                                <%= msg?.sender?.name %>:
+                            </strong>
+                            <%= msg.message %>
+                                <small>
+                                    <%= new Date(msg.createdAt).toLocaleTimeString() %>
+                                </small>
+                        </div>
+                        <% }) %>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" placeholder="Type a message..." />
+                <button onclick="sendUserMessage()">Send</button>
+            </div>
+        </div>
 
-            .modal {
-                position: fixed;
-                top: 0;
-                left: 0;
-                height: 100vh;
-                width: 100vw;
-                background-color: rgba(0, 0, 0, 0.6);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 9999;
-            }
+        <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 
-            .modal-content {
-                position: relative;
-                background-color: white;
-                padding: 30px;
-                width: 100%;
-                height: 100%;
-                box-shadow: none;
-                border-radius: 0;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .modal-content input {
-                width: 300px !important;
-                padding: 12px;
-                margin: 20px 0;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                font-size: 16px;
-            }
-
-            .modal-content button {
-                padding: 12px 25px;
-                background-color: #559A6A;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-            }
-
-            .modal-content button:hover {
-                background-color: #3e7a53;
-            }
-
-            .modal-content .close {
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                font-size: 32px;
-            }
-
-            #emailList {
-                list-style: none;
-                padding: 0;
-                margin: 0 0 10px 0;
-            }
-
-            #emailList li {
-                background-color: #e0e0e0;
-                border-radius: 5px;
-                padding: 5px 10px;
-                margin: 5px 0;
-                font-size: 14px;
-            }
-
-            .assignment-cards {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                margin-top: 30px;
-            }
-
-            .assignment-card {
-                background-color: #BF7B7B;
-                color: white;
-                font-size: 24px;
-                font-weight: bold;
-                width: 300px;
-                height: 200px;
-                padding: 20px 30px;
-                border-radius: 10px;
-                margin: 10px 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                text-align: center;
-                flex-direction: column;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            }
-        </style>
 
         <script>
-            const roomId = "<%= room.roomId %>";
-            const objectRoomId = "<%= room._id %>";
-            const modal = document.getElementById("invitationModal");
-            const emailInput = document.getElementById("inviteEmail");
-            const emailList = document.getElementById("emailList");
-            const collectedEmails = [];
-
-            function openModal() {
-                modal.style.display = "flex";
-                document.body.style.overflow = "hidden";
-            }
-
-            function closeModal() {
-                modal.style.display = "none";
-                document.body.style.overflow = "auto";
-            }
-
-            emailInput.addEventListener("keypress", function (e) {
-                if (e.key === "Enter") {
-                    e.preventDefault();
-                    const email = emailInput.value.trim();
-                    if (email && validateEmail(email)) {
-                        collectedEmails.push(email);
-                        addEmailToList(email);
-                        emailInput.value = "";
-                    } else {
-                        alert("Invalid email address.");
-                    }
-                }
-            });
-
-            function addEmailToList(email) {
-                const li = document.createElement("li");
-                li.textContent = email;
-                emailList.appendChild(li);
-            }
-
-            async function sendInvitations() {
-                if (collectedEmails.length === 0) {
-                    alert("Please enter at least one email.");
-                    return;
-                }
-
-                await fetch("/api/secretAngel/invite", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ roomId, emails: collectedEmails }),
-                });
-
-
-                alert("Invitations sent to:\n" + collectedEmails.join(", "));
-
-                collectedEmails.length = 0;
-                emailList.innerHTML = "";
-                closeModal();
-            }
-
-            function validateEmail(email) {
-                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-            }
-
-            const settingsModal = document.getElementById("settingsModal");
-
-            function openSettingsModal() {
-                settingsModal.style.display = "flex";
-                document.body.style.overflow = "hidden";
-            }
-
-            function closeSettingsModal() {
-                settingsModal.style.display = "none";
-                document.body.style.overflow = "auto";
-            }
-
-            async function submitSettings() {
-                const budget = document.getElementById("gameBudget").value;
-
-                if (!budget || parseFloat(budget) <= 0) {
-                    alert("Please enter a valid budget amount.");
-                    return;
-                }
-
-                await fetch(`/api/secretAngel/${objectRoomId}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ budget }),
-                });
-
-                alert("Budget updated!");
-                window.location.reload();
-                closeSettingsModal();
-            }
-
-            async function deleteGame() {
-                const confirmDelete = confirm("Are you sure you want to delete this game?");
-                if (!confirmDelete) return;
-
-                await fetch(`/api/secretAngel/${objectRoomId}`, {
-                    method: "DELETE"
-                });
-
-                alert("Game deleted.");
-                window.location.href = "/secretAngel";
-            }
-
-            async function startGame() {
-                try {
-                    const response = await fetch(`/api/secretAngel/${objectRoomId}/start`, {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    });
-
-                    const { error } = await response.json();
-
-                    if (response.ok) {
-                        alert("Game started!");
-                        window.location.reload();
-                    } else {
-                        throw new Error(error);
-
-                    }
-                } catch (error) {
-                    console.error("Error starting the game:", error);
-                    alert(error.message);
-                }
-            }
-
-            async function toggleReadyToStart() {
-                try {
-                    const response = await fetch(`/api/secretAngel/${objectRoomId}/ready`, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    });
-
-                    const { error } = await response.json();
-
-                    if (response.ok) {
-                        window.location.reload()
-                    } else {
-                        throw new Error(error);
-
-                    }
-                } catch (error) {
-                    console.error("Error: ", error);
-                    alert(error.message);
-                }
-
-            }
-
-            async function revealResult() {
-                try {
-                    const response = await fetch(`/api/secretAngel/${roomId}/reveal`, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    });
-
-                    let error;
-                    if (response.ok) {
-                        alert("Results revealed!");
-                        window.location.reload();
-                    } else {
-                        const text = await response.text();
-                        if (text) {
-                            const data = JSON.parse(text);
-                            error = data.error;
-                        } else {
-                            error = "Unknown error occurred.";
-                        }
-                        throw new Error(error);
-                    }
-                } catch (error) {
-                    console.error("Error revealing results:", error);
-                    alert(error.message);
-                }
-            }
-
-
+            window.secretAngelRoomData = {
+                roomId: "<%= room.roomId %>",
+                objectRoomId: "<%= room._id %>",
+                userId: "<%= user.id %>",
+                userName: "<%= user.name %>"
+            };
         </script>
+        <script src="/js/secretAngelRoom.js"></script>
+
+        <%- include('../components/footer') %>

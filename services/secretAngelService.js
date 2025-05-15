@@ -4,7 +4,8 @@ const secretAngelInviteEmail = require('../emailTemplate/secretAngelInviteEmail'
 const sendEmail = require('../helpers/sendEmail');
 const fs = require('fs');
 const path = require('path');
-const ejs = require('ejs');
+const ejs = require('ejs')
+
 const secretAngelService = {
 
     createGame: async (gameData) => {
@@ -47,6 +48,8 @@ const secretAngelService = {
                 roomId: newRoomId,
                 color: colors[Math.floor(Math.random() * colors.length)],
             });
+
+
             await game.save();
 
             return game;
@@ -70,6 +73,7 @@ const secretAngelService = {
                 game.members.push({ user: userId, isHost: false, isReady: false });
                 await game.save();
             }
+
             return { success: true, message: 'Joined successfully', game };
         } catch (err) {
             console.error(err);
@@ -105,10 +109,10 @@ const secretAngelService = {
             const game = await SecretAngelGame.findById(gameId);
             if (!game) throw new Error('Game not found');
             const memberIndex = game.members.findIndex(member => member.user.toString() === userId.toString());
-            console.log({ memberIndex })
             if (memberIndex === -1) throw new Error('User not found in game');
             game.members[memberIndex].isReady = !game.members[memberIndex].isReady;
             await game.save();
+            await game.populate('members.user');
             return game;
         } catch (error) {
             throw new Error(error.message);
@@ -131,7 +135,9 @@ const secretAngelService = {
                 .populate({ path: 'host', select: '_id name' })
                 .populate({ path: 'members.user', select: '_id name' })
                 .populate({ path: 'assignment.user', select: '_id name' })
-                .populate({ path: 'assignment.secretAngel', select: '_id name' });
+                .populate({ path: 'assignment.secretAngel', select: '_id name' })
+                .populate({ path: 'chat.sender', select: '_id name' });
+
 
         } catch (error) {
             throw new Error(error.message);
@@ -205,6 +211,7 @@ const secretAngelService = {
     },
     deleteGame: async (id) => {
         try {
+
             const game = await SecretAngelGame.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
             if (!game) throw new Error('Game not found');
             return game;
@@ -223,3 +230,4 @@ const shuffleArray = (array) => {
     }
     return array;
 }
+
