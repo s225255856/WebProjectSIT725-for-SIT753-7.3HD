@@ -86,9 +86,10 @@ const secretAngelService = {
             if (!game) throw new Error('Game not found');
             if (game.members.length < 2) throw new Error('Not enough players to start the game');
             if (game.members.some(member => member.isReady === false && !member.isHost)) throw new Error('All players must be ready to start the game');
+
             const shuffledMembers = shuffleArray([...game.members]);
 
-            const assignments = game.members.map((member, index) => ({
+            const assignments = shuffledMembers.map((member, index) => ({
                 user: member.user,
                 secretAngel: shuffledMembers[(index + 1) % shuffledMembers.length].user,
             }));
@@ -100,10 +101,10 @@ const secretAngelService = {
             return game;
 
         } catch (error) {
-
             throw new Error(error.message);
         }
     },
+
     toggleReadyToStart: async (gameId, userId) => {
         try {
             const game = await SecretAngelGame.findById(gameId);
