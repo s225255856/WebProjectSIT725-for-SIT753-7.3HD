@@ -28,28 +28,62 @@
   <!-- Tab Content -->
   <% categories.forEach((category, index) => { %>
     <div id="<%= category.replace(/\s+/g, '_') %>" class="col s12">
-      <div class="row">
+      <div class="row posts-container" id="posts-<%= category.replace(/\s+/g, '_') %>">
         <% postsByCategory[category].forEach(post => { %>
-          <div class="col s12 m4 l3"> <!-- m2 untuk 5 kolom dalam satu row -->
+          <div class="col s12 m4 l3">
             <div class="card fixed-card">
-                <div class="card-image">
+              <div class="card-image">
                 <img src="<%= post.cover_pic %>">
-                </div>
-                <div class="card-content">
-                <h7 style="font-size: 20px;" class="card-title truncate"><%= post.title %></h7>
-                <p class="truncate"><%= post.description %></p>
+              </div>
+              <div class="card-content">
+                <h7 style="font-size: 18px;font-weight: 400;" class="card-title truncate"><%= post.title %></h7>
+                <p style="font-size: 14px;" class="truncate"><%= post.description %></p>
                 <p><%= post.total_likes %> likes</p>
-                </div>
-                <div class="card-action">
+              </div>
+              <div class="card-action">
                 <a href="#">This is a link</a>
-                </div>
+              </div>
             </div>
-        </div>
+          </div>
         <% }) %>
+      </div>
+      <!-- Load More Button -->
+      <div class="center-align" style="margin: 20px 0;">
+        <button class="btn-primary load-more-btn" data-category="<%= category %>" data-skip="5">Load More</button>
       </div>
     </div>
   <% }) %>
 <%- include('components/footer') %>
+
+<!-- Tab Initialization Script -->
+<style>
+  .fixed-card {
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .fixed-card .card-image img {
+    height: 140px;
+    object-fit: cover;
+  }
+
+  .fixed-card .card-content {
+    flex-grow: 1;
+  }
+
+  .card-title,
+  .card-content p {
+    margin: 0;
+  }
+
+  .truncate {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+</style>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -59,5 +93,52 @@
   document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.fixed-action-btn');
     var instances = M.FloatingActionButton.init(elems, options);
+  });
+
+  //Load more post on click 
+  document.querySelectorAll('.load-more-btn').forEach(button => {
+    button.addEventListener('click', async function () {
+      const category = this.getAttribute('data-category');
+      const skip = parseInt(this.getAttribute('data-skip'));
+
+      const response = await fetch(`api/posts/loadMorePosts?category=${encodeURIComponent(category)}&skip=${skip}`);
+      const result = await response.json();
+
+      if (result.success) {
+        const containerId = 'posts-' + category.replace(/\s+/g, '_');
+        const container = document.getElementById(containerId);
+
+        result.posts.forEach(post => {
+          const postHTML = `
+            <div class="col s12 m4 l3">
+              <div class="card fixed-card">
+                <div class="card-image">
+                  <img src="${post.cover_pic}">
+                </div>
+                <div class="card-content">
+                  <h7 style="font-size: 18px;font-weight: 400;" class="card-title truncate">${post.title}</h7>
+                  <p style="font-size: 14px" class="truncate">${post.description}</p>
+                  <p>${post.total_likes} likes</p>
+                </div>
+                <div class="card-action">
+                  <a href="#">This is a link</a>
+                </div>
+              </div>
+            </div>
+          `;
+          container.insertAdjacentHTML('beforeend', postHTML);
+        });
+
+        // Update skip counter
+        this.setAttribute('data-skip', skip + result.posts.length);
+
+        // Hide button if less than 5 posts returned
+        if (result.posts.length < 5) {
+          this.style.display = 'none';
+        }
+      } else {
+        alert('Failed to load more posts.');
+      }
+    });
   });
 </script>
