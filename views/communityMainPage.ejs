@@ -36,12 +36,12 @@
                 <img src="<%= post.cover_pic %>">
               </div>
               <div class="card-content">
-                <h7 style="font-size: 18px;font-weight: 400;" class="card-title truncate"><%= post.title %></h7>
-                <p style="font-size: 14px;" class="truncate"><%= post.description %></p>
-                <p><%= post.total_likes %> likes</p>
+                <h7 style="font-size: 18px;font-weight: 400;color: var(--main-color);" class="card-title truncate"><%= post.title %></h7>
+                <p style="font-size: 14px; margin-bottom: 10px;" class="truncate"><%= post.description %></p>
+                <p style="color: var(--main-color);display: flex; align-items: center;"><i style="font-size: medium; margin-right: 5px;" class="large material-icons">favorite</i><%= post.total_likes %> likes</p>
               </div>
               <div class="card-action">
-                <a href="#">This is a link</a>
+                <a style="color: var(--green-gold);" href="#">View Idea</a>
               </div>
             </div>
           </div>
@@ -116,12 +116,12 @@
                   <img src="${post.cover_pic}">
                 </div>
                 <div class="card-content">
-                  <h7 style="font-size: 18px;font-weight: 400;" class="card-title truncate">${post.title}</h7>
-                  <p style="font-size: 14px" class="truncate">${post.description}</p>
-                  <p>${post.total_likes} likes</p>
+                  <h7 style="font-size: 18px;font-weight: 400;color: var(--main-color);" class="card-title truncate">${post.title}</h7>
+                  <p style="font-size: 14px; margin-bottom: 10px;" class="truncate">${post.description}</p>
+                  <p style="color: var(--main-color);display: flex; align-items: center;"><i style="font-size: medium; margin-right: 5px;" class="large material-icons">favorite</i>${post.total_likes} likes</p>
                 </div>
                 <div class="card-action">
-                  <a href="#">This is a link</a>
+                  <a style="color: var(--green-gold);" href="#">View Idea</a>
                 </div>
               </div>
             </div>
