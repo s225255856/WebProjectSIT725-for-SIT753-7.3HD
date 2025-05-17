@@ -7,7 +7,7 @@ const postService = {
       },
     getPostsByCat: async (cat) => {
         return await Post.find({ category: cat })
-          .sort({ uploadedAt: -1 })
+          .sort({ uploadedAt: -1, title: 1, description: 1 })
           .limit(5);
       },
     getPostsByCatWithSkip: async (cat, skip, limit) => {
