@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
 const jwt = require('jsonwebtoken');
-const { postController } = require('../controllers');const secretAngelRouter = require('./pages/secretAngelPages');
+const { postController } = require('../controllers');
+const secretAngelRouter = require('./pages/secretAngelPages');
 
 
 router.get('/', authMiddleware, (req, res) => {
