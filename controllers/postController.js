@@ -36,34 +36,50 @@ const postController = {
         }
       },
       getCommunityMainPage: async (req, res) => {
-      try{
-        const categoryNames = ['Wrapping Ideas', 'DIY Gifts', 'Eco-friendly Gifts', 'Seasonal Gifts'];
+        try{
+          const categoryNames = ['Wrapping Ideas', 'DIY Gifts', 'Eco-friendly Gifts', 'Seasonal Gifts'];
 
-        //Get 5 first posts from mongoDB per category 
-        const postsByCategory = {};
+          //Get 5 first posts from mongoDB per category 
+          const postsByCategory = {};
 
-        for (const cat of categoryNames) {
-          postsByCategory[cat] = await postService.getPostsByCat(cat);
+          for (const cat of categoryNames) {
+            postsByCategory[cat] = await postService.getPostsByCat(cat);
+          }
+
+          res.render('communityMainPage', {
+            error: null,
+            user: req.user,
+            categories: categoryNames,
+            postsByCategory
+          });
+
+        }catch (err) {
+          console.error(err);
+          res.render('communityMainPage', {
+            error: 'Failed to fetch posts',
+            user: req.user,
+            categories: [],
+            postsByCategory: {}
+          });
         }
+      },
+      loadMorePosts: async (req, res) => {
+        try {
+          const { category, skip } = req.query;
+          const limit = 5;
 
-        res.render('communityMainPage', {
-          error: null,
-          user: req.user,
-          categories: categoryNames,
-          postsByCategory
-        });
+          if (!category) {
+            return res.status(400).json({ success: false, message: 'Category is required.' });
+          }
 
-      }catch (err) {
-        console.error(err);
-        res.render('communityMainPage', {
-          error: 'Failed to fetch posts',
-          user: req.user,
-          categories: [],
-          postsByCategory: {}
-        });
+          const posts = await postService.getPostsByCatWithSkip(category, parseInt(skip), limit);
+
+          res.json({ success: true, posts });
+        } catch (error) {
+          console.error('Load more error:', error);
+          res.status(500).json({ success: false, message: 'Failed to load more posts.' });
+        }
       }
-
-    }
 }
 
 module.exports = postController;

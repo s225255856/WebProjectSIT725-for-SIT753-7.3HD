@@ -9,7 +9,8 @@ const postService = {
         return await Post.find({ category: cat })
           .sort({ uploadedAt: -1 })
           .limit(5);
-      } 
+      },
+    
 };
 
 module.exports = postService;

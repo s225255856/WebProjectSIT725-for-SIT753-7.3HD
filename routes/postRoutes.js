@@ -5,5 +5,6 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const upload = require('../middlewares/upload'); 
 
 router.post('/addpost', authMiddleware, upload.any(), postController.addPost);
+router.get('/loadMorePosts', authMiddleware, postController.loadMorePosts)
 
 module.exports = router;
