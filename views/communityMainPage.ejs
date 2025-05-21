@@ -38,7 +38,11 @@
               <div class="card-content">
                 <h7 style="font-size: 18px;font-weight: 400;color: var(--main-color);" class="card-title truncate"><%= post.title %></h7>
                 <p style="font-size: 14px; margin-bottom: 10px;" class="truncate"><%= post.description %></p>
-                <p style="color: var(--main-color);display: flex; align-items: center;"><i style="font-size: medium; margin-right: 5px;" class="large material-icons">favorite</i><%= post.total_likes %> likes</p>
+                <% if (post.total_likes == 0) { %>
+                <p></p>
+                <% } else {%>
+                <p style="color: var(--main-color);display: flex; align-items: center;"><i style="font-size: medium; margin-right: 5px;" class="large material-icons">favorite</i><%= post.total_likes %></p>
+                <% }%>
               </div>
               <div class="card-action">
                 <a style="color: var(--green-gold);" href="#">View Idea</a>
@@ -109,6 +113,15 @@
         const container = document.getElementById(containerId);
 
         result.posts.forEach(post => {
+          let likesHTML = `<p></p>`;
+          if (post.total_likes !== 0) {
+            likesHTML = `
+              <p style="color: var(--main-color); display: flex; align-items: center;">
+                <i style="font-size: medium; margin-right: 5px;" class="large material-icons">favorite</i>
+                ${post.total_likes}
+              </p>
+            `;
+          }
           const postHTML = `
             <div class="col s12 m4 l3">
               <div class="card fixed-card">
@@ -118,7 +131,7 @@
                 <div class="card-content">
                   <h7 style="font-size: 18px;font-weight: 400;color: var(--main-color);" class="card-title truncate">${post.title}</h7>
                   <p style="font-size: 14px; margin-bottom: 10px;" class="truncate">${post.description}</p>
-                  <p style="color: var(--main-color);display: flex; align-items: center;"><i style="font-size: medium; margin-right: 5px;" class="large material-icons">favorite</i>${post.total_likes} likes</p>
+                  ${likesHTML}
                 </div>
                 <div class="card-action">
                   <a style="color: var(--green-gold);" href="#">View Idea</a>
