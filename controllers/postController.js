@@ -79,6 +79,55 @@ const postController = {
           console.error('Load more error:', error);
           res.status(500).json({ success: false, message: 'Failed to load more posts.' });
         }
+      },
+      getDetailPostPage: async (req, res) => {
+        try {
+          const { post_id } = req.query;
+
+          if (!post_id) {
+            return res.status(400).send('Post ID is required.');
+          }
+
+          const postDetail = await postService.getPostById(post_id); 
+
+          if (!postDetail) {
+            return res.status(404).send('Post not found.');
+          }
+
+          // get user data by user_id string
+          const userObject = await userService.getUserById(postDetail.user_id); 
+          let usercreator = "";
+          if(userObject){
+            usercreator = userObject?.name !== null ? userObject?.name : userObject?.email;
+          }else{
+            return res.status(404).send('User not found.');
+          }
+          
+          // call function in service to check user already liked the post or not and the total likes
+          const isLiked = req.user ? await likePostService.isPostLikedByUser(post_id, req.user.id) : false;
+          const totalLikes = await likePostService.countLikesForPost(post_id);
+          
+          res.render('detailPostCommunity', {
+            error: null,
+            user: req.user,
+            post: postDetail,
+            usercreator: usercreator,
+            totalLikes: totalLikes,
+            isLikedByCurrentUser: isLiked
+          });
+
+        } catch (error) {
+          console.error('Load detail post error:', error);
+          res.render('detailPostCommunity', {
+            error: 'Failed to fetch post',
+            user: req.user,
+            post: {},
+            usercreator: null,
+            totalLikes: totalLikes,
+            isLikedByCurrentUser: false
+          });
+          //res.status(500).send('Server error while loading post.');
+        }
       }
 }
 
