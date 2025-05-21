@@ -124,7 +124,7 @@ const postController = {
             user: req.user,
             post: {},
             usercreator: null,
-            totalLikes: totalLikes,
+            totalLikes: 0,
             isLikedByCurrentUser: false
           });
           //res.status(500).send('Server error while loading post.');
