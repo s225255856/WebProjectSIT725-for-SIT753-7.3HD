@@ -1,4 +1,5 @@
-const {postService} = require('../services');
+const {postService, likePostService} = require('../services');
+const { userService } = require('../services');
 
 const postController = {
     addPost: async (req, res) => {
@@ -127,6 +128,54 @@ const postController = {
             isLikedByCurrentUser: false
           });
           //res.status(500).send('Server error while loading post.');
+        }
+      },
+      toggleLike: async (req, res) => {
+        try {
+          const { postId } = req.params;
+          const userId = req.user.id;
+
+          // Check if login user already liked post or not
+          const existingLike = await likePostService.getAnyLikeRecord(postId, userId);
+
+            // CASE: Login User already liked post --> post status == 'liked'
+          if (existingLike && existingLike.status === 'liked') {
+            await likePostService.updateLikeStatus(existingLike, 'deleted');
+
+            // lessen the total likes number in db
+            await postService.updateTotalLikes(postId, -1);
+
+            return res.json({ success: true, liked: false });
+          }else if (existingLike && existingLike.status === 'deleted') {
+            // CASE: Login User ever like, and the undo like (status: deleted)
+            await likePostService.updateLikeStatus(existingLike, 'liked');
+
+            // add the total likes number in db
+            await postService.updateTotalLikes(postId, 1);
+
+            return res.json({ success: true, liked: true });
+          } else{
+            // CASE: Login User has not like the pos yet
+            const post = await postService.getPostById(postId);
+            if (!post) {
+              return res.status(404).json({ success: false, message: 'Post not found' });
+            }
+
+            await likePostService.createNewLike({
+              postId,
+              creatorId: post.user_id,
+              likerId: userId
+            });
+
+            // add the total likes number in db
+            await postService.updateTotalLikes(postId, 1);
+
+            return res.json({ success: true, liked: true });
+          }
+
+        } catch (error) {
+          console.error('Error toggling like:', error);
+          res.status(500).json({ success: false, message: 'Internal server error' });
         }
       }
 }
