@@ -28,6 +28,17 @@ const likePostService = {
         status: 'liked'
         });
         return await newLike.save();
+    },
+    isPostLikedByUser: async (postId, userId) => {
+        const existingLike = await LikePost.findOne({
+        post_id: postId,
+        liker_id: userId,
+        status: 'liked'
+        });
+        return !!existingLike;
+    },
+    countLikesForPost: async (postId) => {
+        return await LikePost.countDocuments({ post_id: postId, status: 'liked' });
     }
 };
 
