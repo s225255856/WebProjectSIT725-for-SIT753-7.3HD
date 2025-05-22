@@ -149,6 +149,7 @@ function revealResult() {
 // ===================== SOCKET CONNECTION =====================
 socket.on("connect", () => {
     socket.emit("joinRoom", { roomId, userName });
+    socket.emit("registerUser", { userId });
     appendChatMessage("System", "Connected to chat");
 });
 
@@ -176,6 +177,9 @@ socket.on("budgetUpdated", (newBudget) => {
 
 });
 
+
+
+
 socket.on("invitesSent", (emails) => {
     alert("Invitations sent to:\n" + emails.join(", "));
     collectedEmails.length = 0;
@@ -184,14 +188,20 @@ socket.on("invitesSent", (emails) => {
 });
 
 
-socket.on("gameDeleted", (deletedGameId) => {
+socket.on("gameDeleted", () => {
     alert("Game deleted.");
     window.location.href = "/secretAngel";
 });
 
-socket.on("gameStarted", (assignment) => {
+socket.on("gameStarted", () => {
     alert("Game started!");
     appendChatMessage("System", "Game Started");
+
+
+});
+
+socket.on("yourAssignment", ({ targetName }) => {
+    alert(`🎯 Your target is: ${targetName}`);
     window.location.reload();
 });
 
@@ -205,7 +215,6 @@ socket.on("readyStatusChanged", ({ members }) => {
     }
 
     container.innerHTML = members.map(member => {
-        console.log(member)
         let label = member.user.name;
         if (member.isHost) label += " (Host)";
         if (member.isReady) label += " (Ready)";

@@ -82,7 +82,7 @@ const secretAngelService = {
     },
     startGame: async (gameId) => {
         try {
-            const game = await SecretAngelGame.findById(gameId);
+            const game = await SecretAngelGame.findById(gameId)
             if (!game) throw new Error('Game not found');
             if (game.members.length < 2) throw new Error('Not enough players to start the game');
             if (game.members.some(member => member.isReady === false && !member.isHost)) throw new Error('All players must be ready to start the game');
