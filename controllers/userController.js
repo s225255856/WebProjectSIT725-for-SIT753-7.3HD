@@ -194,6 +194,22 @@ const userController = {
       res.status(400).json({ message: error.message, success: false });
     }
   },
+  softDeleteUser: async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+      const updatedUser = await userService.softDeleteUser(userId);
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.json({ message: 'User soft deleted successfully', updatedUser });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  }
+
 };
 
 module.exports = userController;
