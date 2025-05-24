@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
 });
 
 
-// require('./sockets/secretAngelSocket')(io);
+module.exports = { app, server };
 
 
 server.listen(port, () => {
