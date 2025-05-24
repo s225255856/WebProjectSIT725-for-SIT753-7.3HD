@@ -97,20 +97,38 @@ http://localhost:3000
 
 ```mermaid
 flowchart TD
-    subgraph Client
-        A[Browser] -->|HTTP| B[Express Routes]
-        A -->|WebSocket| C[Socket.IO Server]
+    subgraph Client["Browser (Client)"]
+        A[EJS Templates] -->|Fetch API| B[HTTP Requests]
+        A -->|WebSocket| C[Socket.IO Client]
     end
 
-    subgraph Server
-        B --> D[pageRoutes]
-        D --> E[EJS Templates]
-        E -->|HTML| A
-
-        C --> F[Socket Handlers]
-        F -->|Broadcast| A
+    subgraph Server["Node.js Server"]
+        B --> D[Express Routes]
+        D --> E[Controllers]
+        E --> F[Services]
         F --> G[(MongoDB)]
+
+        C --> H[Socket.IO Server]
+        H --> I[Socket Handlers]
+        I -->|Read/Write| G
+        I -->|Broadcast| C
+
+        %% Email Service Integration
+        F --> J[Email Service]
+        J -->|SendGrid/Nodemailer| K[(SMTP Server)]
+        I -->|Trigger Emails| J
     end
+
+    A -->|Render| L[HTML/CSS/JS]
+    L -->|Display| Client
+    F -->|Return Data| E
+    E -->|JSON| D
+    D -->|JSON| B
+
+    %% Email Triggers
+    E -->|User Signup| J
+    F -->|Password Reset| J
+    I -->|Game Invites| J
 ```
 
 _Diagram created by Tsz Hin Yee (223983938)_
