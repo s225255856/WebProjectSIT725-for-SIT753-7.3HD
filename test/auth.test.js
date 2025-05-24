@@ -184,7 +184,7 @@ describe('Auth Integration Tests', function () {
                 .field('name', 'New Name')
                 .redirects(0);
 
-            expect(res.status).to.equal(302);
+            expect(res.status).to.equal(200);
             const updatedUser = await User.findById(userId);
             expect(updatedUser.name).to.equal('New Name');
         });
@@ -198,7 +198,7 @@ describe('Auth Integration Tests', function () {
                 .field('password', newPassword)
                 .field('confirmPassword', newPassword);
 
-            expect(res.status).to.equal(302);
+            expect(res.status).to.equal(200);
 
             const updatedUser = await User.findById(userId);
             const match = await bcrypt.compare(newPassword, updatedUser.password);

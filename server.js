@@ -50,9 +50,11 @@ io.on("connection", (socket) => {
 });
 
 
-module.exports = { app, server };
+module.exports = { app, server, io };
 
 
-server.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+if (require.main === module) {
+  server.listen(3000, () => {
+    console.log('Server running at http://localhost:3000');
+  });
+}
