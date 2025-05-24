@@ -101,8 +101,6 @@ const userService = {
       updates.avatar = avatar;
     }
 
-    console.log(userId, { name, password, avatar });
-
     const updatedUser = await User.findOneAndUpdate(
       { _id: userId, deleted: false },
       updates,
