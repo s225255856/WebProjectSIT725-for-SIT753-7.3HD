@@ -38,7 +38,7 @@ router.post('/signup', userController.signup);
 router.post('/forget-password', userController.forgetPassword);
 
 router.post('/reset-password', userController.resetPassword);
-router.post(
+router.put(
   '/settings',
   authMiddleware,
   upload.single('avatar'),

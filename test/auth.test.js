@@ -12,10 +12,35 @@ let mongoServer;
 let token;
 let userId;
 
+// Global setup and teardown
+before(async function () {
+    mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
+
+    if (mongoose.connection.readyState !== 0) {
+        await mongoose.disconnect();
+    }
+
+    await mongoose.connect(uri);
+
+    console.log('MongoDB In-Memory Server connected');
+});
+
+after(async function () {
+    await mongoose.disconnect();
+    await mongoServer.stop();
+});
+
+afterEach(async function () {
+    if (mongoose.connection.readyState === 1) {
+        await User.deleteMany({});
+    }
+});
+
 describe('Auth Middleware Unit Test', () => {
     it('should respond 403 if no token provided', async () => {
         const res = await request(app)
-            .post('/api/users/settings')
+            .put('/api/users/settings')
             .send({ name: 'Test' });
 
         expect(res.status).to.equal(403);
@@ -24,28 +49,36 @@ describe('Auth Middleware Unit Test', () => {
 });
 
 describe('Auth Integration Tests', function () {
-    before(async function () {
-        mongoServer = await MongoMemoryServer.create();
-        const uri = mongoServer.getUri();
+    describe('GET /api/users/', function () {
+        beforeEach(async function () {
+            await User.create([
+                { name: 'Alice', email: 'alice@example.com', password: 'pass1' },
+                { name: 'Bob', email: 'bob@example.com', password: 'pass2' }
+            ]);
+        });
 
-        if (mongoose.connection.readyState !== 0) {
-            await mongoose.disconnect();
-        }
+        it('should return all users', async function () {
+            const res = await request(app).get('/api/users/');
 
-        await mongoose.connect(uri);
-
-        console.log('MongoDB In-Memory Server connected');
+            expect(res.status).to.equal(200);
+            expect(res.body.data).to.be.an('array');
+            expect(res.body.data.length).to.equal(2);
+            expect(res.body.data[0]).to.have.property('email');
+        });
     });
 
-    after(async function () {
-        await mongoose.disconnect();
-        await mongoServer.stop();
-    });
+    describe('GET /api/users/logout', function () {
+        it('should clear the token cookie and redirect', async function () {
+            const res = await request(app)
+                .get('/api/users/logout')
+                .set('Cookie', [`token=some-valid-token`])
+                .redirects(0);
 
-    afterEach(async function () {
-        if (mongoose.connection.readyState === 1) {
-            await User.deleteMany({});
-        }
+            expect(res.status).to.equal(302);
+            const setCookieHeader = res.header['set-cookie'][0];
+            expect(setCookieHeader).to.include('token=');
+            expect(setCookieHeader).to.include('Expires=');
+        });
     });
 
     describe('POST /api/users/signup', function () {
@@ -118,7 +151,7 @@ describe('Auth Integration Tests', function () {
         });
     });
 
-    describe('POST /api/users/settings', function () {
+    describe('PUT /api/users/settings', function () {
         beforeEach(async function () {
             const password = 'password123';
             const hashed = await bcrypt.hash(password, 10);
@@ -146,12 +179,12 @@ describe('Auth Integration Tests', function () {
 
         it('should update user name and avatar', async function () {
             const res = await request(app)
-                .post('/api/users/settings')
+                .put('/api/users/settings')
                 .set('Cookie', [`token=${token}`])
                 .field('name', 'New Name')
                 .redirects(0);
 
-            expect(res.status).to.equal(302); // Because the endpoint redirects
+            expect(res.status).to.equal(302);
             const updatedUser = await User.findById(userId);
             expect(updatedUser.name).to.equal('New Name');
         });
@@ -160,16 +193,62 @@ describe('Auth Integration Tests', function () {
             const newPassword = 'newStrongPass123';
 
             const res = await request(app)
-                .post('/api/users/settings')
+                .put('/api/users/settings')
                 .set('Cookie', [`token=${token}`])
                 .field('password', newPassword)
                 .field('confirmPassword', newPassword);
 
-            expect(res.status).to.equal(302); // because it redirects
+            expect(res.status).to.equal(302);
 
             const updatedUser = await User.findById(userId);
             const match = await bcrypt.compare(newPassword, updatedUser.password);
             expect(match).to.be.true;
+        });
+    });
+
+    describe('DELETE /api/users', function () {
+        let delUserId;
+        let delToken;
+
+        beforeEach(async function () {
+            const password = await bcrypt.hash('delpass123', 10);
+
+            const user = await User.create({
+                name: 'Deletable User',
+                email: 'del@user.com',
+                password,
+            });
+
+            delUserId = user._id;
+
+            delToken = jwt.sign(
+                {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                },
+                process.env.JWT_SECRET || 'default_secret',
+                { expiresIn: '1h' }
+            );
+        });
+
+        it('should soft delete the user', async function () {
+            const res = await request(app)
+                .delete('/api/users')
+                .set('Cookie', [`token=${delToken}`]);
+
+            expect(res.status).to.equal(200);
+            expect(res.body.message).to.equal('User soft deleted successfully');
+
+            const softDeletedUser = await User.findById(delUserId);
+            expect(softDeletedUser).to.exist;
+            expect(softDeletedUser.deleted).to.be.true;
+        });
+
+        it('should not delete without token', async function () {
+            const res = await request(app).delete('/api/users');
+            expect(res.status).to.equal(403);
+            expect(res.body.message).to.equal('Invalid or expired token');
         });
     });
 });
