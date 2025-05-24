@@ -7,6 +7,7 @@ function authenticateToken(req, res, next) {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
+    if (decoded.deleted) return res.redirect('/login');
     req.user = decoded;
     next();
   } catch (err) {

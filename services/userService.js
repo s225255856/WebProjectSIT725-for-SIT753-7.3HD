@@ -10,21 +10,21 @@ const forgetPasswordEmail = require('../emailTemplate/forgotPasswordEmail');
 const userService = {
   getAllUsers: async () => {
     try {
-      return await User.find();
+      return await User.find({ deleted: false });
     } catch (error) {
       throw new Error(error.message);
     }
   },
   findById: async (id) => {
     try {
-      return await User.find({ _id: id });
+      return await User.findOne({ _id: id, deleted: false });
     } catch (error) {
       throw new Error(error.message);
     }
   },
   login: async ({ email, password }) => {
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email, deleted: false });
       if (!user) return null;
       if (!user.password) throw new Error("Not available for using email and password login For This Account");
       const isMatch = await bcrypt.compare(password, user.password);
@@ -42,7 +42,7 @@ const userService = {
         throw new Error('All fields are required');
       }
 
-      const existingUser = await User.findOne({ email });
+      const existingUser = await User.findOne({ email, deleted: false });
       if (existingUser) {
         throw new Error('User already exists');
       }
@@ -57,7 +57,7 @@ const userService = {
 
   sendResetLink: async (email) => {
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email, deleted: false });
       if (!user) {
         throw new Error('User not found');
       }
@@ -94,14 +94,16 @@ const userService = {
       updates.avatar = avatar;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, updates, {
-      new: true,
-    });
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: userId, deleted: false },
+      updates,
+      { new: true }
+    );
     return updatedUser;
   },
   findByEmail: async (email) => {
     try {
-      return await User.findOne({ email });
+      return await User.findOne({ email, deleted: false });
     } catch (error) {
       throw new Error(error.message);
     }
@@ -109,7 +111,7 @@ const userService = {
 
   isEmailRegistered: async (email) => {
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email, deleted: false });
       return user ? true : false;
     } catch (err) {
       console.error('Error checking email in database:', err);
@@ -144,6 +146,20 @@ const userService = {
     OTPStore.delete(email);
     return true;
   },
+
+  softDeleteUser: async (userId) => {
+    try {
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { deleted: true },
+        { new: true }
+      );
+      return updatedUser;
+    } catch (error) {
+      throw new Error('Error soft deleting user: ' + error.message);
+    }
+  }
 };
+
 
 module.exports = userService;
