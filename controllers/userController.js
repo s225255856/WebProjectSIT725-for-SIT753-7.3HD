@@ -123,6 +123,10 @@ const userController = {
         avatar: finalAvatar,
       });
 
+      if (!updatedUser) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
       const token = jwt.sign(
         {
           id: updatedUser._id,
@@ -132,9 +136,17 @@ const userController = {
         process.env.JWT_SECRET || 'default_secret',
       );
       res.cookie('token', token, { httpOnly: true });
-
-      res.redirect('/');
+      res.json({
+        message: 'Settings updated successfully',
+        user: {
+          id: updatedUser._id,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          avatar: updatedUser.avatar,
+        },
+      });
     } catch (error) {
+      console.log(error)
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   },

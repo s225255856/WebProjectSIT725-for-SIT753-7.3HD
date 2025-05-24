@@ -1,17 +1,30 @@
 const secretAngelService = require('../services/secretAngelService');
-const userSocketMap = new Map()
+
+
+const userSocketMap = new Map();
+
 module.exports = (io, socket) => {
 
-    socket.on('createGame', async (data) => {
-        const rooms = await secretAngelService.getAllGames()
-        io.emit('roomList', rooms);
+    socket.on('createGame', async () => {
+        try {
+            const rooms = await secretAngelService.getAllGames();
+            io.emit('roomList', rooms);
+        } catch (err) {
+            socket.emit('errorMessage', err.message);
+        }
     });
+
 
     socket.on("registerUser", ({ userId }) => {
-        userSocketMap.set(userId, socket.id);
+        if (userId) {
+            userSocketMap.set(userId, socket.id);
+        }
     });
 
+
     socket.on("joinRoom", async ({ roomId, userName }) => {
+        if (!roomId || !userName) return;
+
         socket.join(`room-${roomId}`);
         io.to(`room-${roomId}`).emit("systemMessage", `${userName} joined the room`);
 
@@ -26,7 +39,9 @@ module.exports = (io, socket) => {
     });
 
 
-    socket.on("sendMessage", async ({ roomId, userId, userName, message }) => {
+    socket.on("sendMessage", ({ roomId, userId, userName, message }) => {
+        if (!roomId || !userId || !message) return;
+
         const timestamp = new Date();
         io.to(`room-${roomId}`).emit("newMessage", {
             senderId: userId,
@@ -36,15 +51,16 @@ module.exports = (io, socket) => {
         });
     });
 
+
     socket.on("updateBudget", async ({ gameId, budget }) => {
         try {
             const game = await secretAngelService.updateGame(gameId, { budget });
-
             io.to(`room-${game.roomId}`).emit("budgetUpdated", game.budget);
         } catch (err) {
             socket.emit("errorMessage", err.message);
         }
     });
+
 
     socket.on("deleteGame", async ({ gameId }) => {
         try {
@@ -55,14 +71,17 @@ module.exports = (io, socket) => {
         }
     });
 
+
     socket.on("startGame", async ({ gameId }) => {
         try {
-            const game = await secretAngelService.startGame(gameId);
-            io.to(`room-${game.roomId}`).emit("gameStarted");
+            const startedGame = await secretAngelService.startGame(gameId);
+            io.to(`room-${startedGame.roomId}`).emit("gameStarted");
+
             const updatedGame = await secretAngelService.getSingleGame({ _id: gameId });
             updatedGame.assignment.forEach(pair => {
-                const angelId = pair.secretAngel._id.toString();
+                const angelId = pair.secretAngel._id?.toString();
                 const targetName = pair.user.name;
+
                 const socketId = userSocketMap.get(angelId);
                 if (socketId) {
                     io.to(socketId).emit("yourAssignment", { targetName });
@@ -72,6 +91,7 @@ module.exports = (io, socket) => {
             socket.emit("errorMessage", err.message);
         }
     });
+
 
     socket.on("toggleReady", async ({ gameId, userId }) => {
         try {
@@ -84,6 +104,7 @@ module.exports = (io, socket) => {
         }
     });
 
+
     socket.on("revealResults", async ({ roomId }) => {
         try {
             await secretAngelService.revealResult(roomId);
@@ -92,6 +113,7 @@ module.exports = (io, socket) => {
             socket.emit("errorMessage", err.message);
         }
     });
+
 
     socket.on("invitePlayers", async ({ roomId, emails }) => {
         try {
@@ -102,12 +124,16 @@ module.exports = (io, socket) => {
         }
     });
 
+
     socket.on("disconnect", () => {
-        for (let [uid, sid] of userSocketMap.entries()) {
-            if (sid === socket.id) {
-                userSocketMap.delete(uid);
+        for (const [userId, socketId] of userSocketMap.entries()) {
+            if (socketId === socket.id) {
+                userSocketMap.delete(userId);
                 break;
             }
         }
     });
 };
+
+
+module.exports.userSocketMap = userSocketMap;

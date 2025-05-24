@@ -81,18 +81,27 @@ const userService = {
   updateSettings: async (userId, { name, password, avatar }) => {
     const updates = {};
 
+    // Trim and update name if valid
     if (name && name.trim() !== '') {
       updates.name = name.trim();
     }
 
+    // Hash and update password only if provided and not empty
     if (password && password.trim() !== '') {
       const hashedPassword = await bcrypt.hash(password, 10);
       updates.password = hashedPassword;
     }
 
-    if (avatar !== undefined) {
+    // Handle avatar:
+    // - if explicitly null => remove avatar
+    // - if defined and not null => update avatar
+    if (avatar === null) {
+      updates.avatar = null;  // remove avatar
+    } else if (avatar !== undefined) {
       updates.avatar = avatar;
     }
+
+    console.log(userId, { name, password, avatar });
 
     const updatedUser = await User.findOneAndUpdate(
       { _id: userId, deleted: false },
