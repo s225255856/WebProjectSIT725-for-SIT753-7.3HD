@@ -9,6 +9,7 @@ const http = require('http'); // Needed to create server for Socket.IO
 const socketIo = require('socket.io');
 const validateEnv = require('./helpers/validateEnv');
 const secretAngelSocket = require("./sockets/secretAngelSocket");
+const likeNotificationSocket = require("./sockets/likeNotificationSocket");
 validateEnv();
 
 const app = express();
@@ -46,9 +47,11 @@ const io = socketIo(server, {
 });
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
+  likeNotificationSocket(io, socket);
   secretAngelSocket(io, socket);
 });
 
+app.set('socketio', io);
 
 module.exports = { app, server };
 
