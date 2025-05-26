@@ -28,11 +28,11 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 | Janaki Chaudhary | 224941505  |
 
 ## HI-FI Figma Prototype
-- ** 🎁 Intelligent Gift Recommendations ** : 
-- ** 📅 Event Planning Assistant ** :
+- **🎁 Intelligent Gift Recommendations** : 
+- **📅 Event Planning Assistant** :
 - [**🌍 Gift Ideas Community**](https://www.figma.com/proto/yrB3WDk7yrwd1viMnE9Mpp/GiftzyWebProject?node-id=607-27&t=1fn8KJwkaiQzboOE-1&scaling=scale-down&content-scaling=fixed&pageid=1669%3A162202&starting-point-node-id=607%3A27)
-- ** 🛒 Gift Marketplace ** :
-- ** ✨ Secret Angel Game ** :
+- **🛒 Gift Marketplace** :
+- **✨ Secret Angel Game** :
   
 ## API Documentation
 
