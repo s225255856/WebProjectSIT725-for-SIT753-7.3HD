@@ -49,6 +49,22 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 
 - `POST` : Upload new Post
 
+/api/posts/loadMorePosts
+
+- `GET` : Load more 5 Posts
+
+/api/posts/like/:postId
+
+- `POST` : Toggle like a post
+
+/api/communityMainPage
+
+- `GET` : Load gift ideas community page
+
+/api/detailPostPage
+
+- `GET` : Load detail post page
+
 ## 🚀 Getting Started
 
 ### Prerequisites
