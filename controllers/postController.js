@@ -1,6 +1,6 @@
 const {postService, likePostService} = require('../services');
 const { userService } = require('../services');
-
+const { emitToUser } = require('../sockets/likeNotificationSocket'); //for calling real-time notif using socketIO
 const postController = {
     addPost: async (req, res) => {
         try {
@@ -135,6 +135,18 @@ const postController = {
           const { postId } = req.params;
           const userId = req.user.id;
 
+          //SOCKET REAL TIME NOTIF
+          const post = await postService.getPostById(postId);
+          if (!post) {
+            return res.status(404).json({ success: false, message: 'Post not found' });
+          }
+
+          //SOCKET REAL TIME NOTIF : To prevent creator get like notif from themselves
+          let sameUserId = false;
+          if (String(userId) === String(post.user_id)) {
+            sameUserId = true;
+          }
+
           // Check if login user already liked post or not
           const existingLike = await likePostService.getAnyLikeRecord(postId, userId);
 
@@ -153,13 +165,23 @@ const postController = {
             // add the total likes number in db
             await postService.updateTotalLikes(postId, 1);
 
+            //SOCKET REAL TIME NOTIF 
+            if (sameUserId === false && post.get_likes_notif === true) {
+              const likerUser = await userService.getUserById(userId);
+              const io = req.app.get('socketio');
+
+              emitToUser(io, post.user_id.toString(), 'like_notification', {
+                postId,
+                likerName: likerUser?.name || likerUser?.email || 'Someone',
+              });
+            }
             return res.json({ success: true, liked: true });
           } else{
             // CASE: Login User has not like the pos yet
-            const post = await postService.getPostById(postId);
+            /*const post = await postService.getPostById(postId);
             if (!post) {
               return res.status(404).json({ success: false, message: 'Post not found' });
-            }
+            }*/
 
             await likePostService.createNewLike({
               postId,
@@ -169,6 +191,17 @@ const postController = {
 
             // add the total likes number in db
             await postService.updateTotalLikes(postId, 1);
+
+            // SOCKET REAL TIME NOTIF
+            if (sameUserId === false && post.get_likes_notif === true) {
+              const likerUser = await userService.getUserById(userId);
+              const io = req.app.get('socketio');
+
+              emitToUser(io, post.user_id.toString(), 'like_notification', {
+                postId,
+                likerName: likerUser?.name || likerUser?.email || 'Someone',
+              });
+            }
 
             return res.json({ success: true, liked: true });
           }
