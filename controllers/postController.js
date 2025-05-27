@@ -135,6 +135,10 @@ const postController = {
           const { postId } = req.params;
           const userId = req.user.id;
 
+          if (!postId || !userId) {
+            return res.status(400).json({ success: false, message: 'Post Id and liker id is undefined' });
+          }
+          
           //SOCKET REAL TIME NOTIF
           const post = await postService.getPostById(postId);
           if (!post) {
