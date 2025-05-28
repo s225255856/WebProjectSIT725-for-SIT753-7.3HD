@@ -24,10 +24,15 @@ const eventReminderService = {
         try {
             console.log("Fetching events between:", start, "and", end);
 
-            // ✅ Query database for events within the date range
+            //Convert FullCalendar's date (with timezone) to UTC
+            const startUTC = new Date(start).toISOString();
+            const endUTC = new Date(end).toISOString();
+
+            console.log("Converted Dates for Query:", startUTC, endUTC);
+
             const events = await EventReminder.find({
-                event_start_date: { $gte: start },
-                event_end_date: { $lte: end }
+                event_start_date: { $gte: startUTC },
+                event_end_date: { $lte: endUTC }
             });
 
             console.log("Retrieved Events:", events);
@@ -36,7 +41,7 @@ const eventReminderService = {
             console.error("Error retrieving events:", error);
             throw new Error(`Error retrieving events: ${error.message}`);
         }
-    },
+},
 
     editEvent: async (eventId, eventData) => {
         try {

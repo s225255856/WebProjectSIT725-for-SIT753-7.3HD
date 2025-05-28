@@ -9,21 +9,33 @@ const eventReminderController = {
     //get all events
     getEvents: async (req, res) => {
         try {
-            console.log("Received event fetch request with query:", req.query);
-
             const { start, end } = req.query;
             if (!start || !end) {
                 return res.status(400).json({ error: "Start and End dates are required." });
             }
 
-            //ensure `start` and `end` are passed as Date objects
-            const events = await eventReminderService.getEvents(new Date(start), new Date(end));
-            res.status(200).json(events);
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+
+            const events = await eventReminderService.getEvents(startDate, endDate);
+
+            //ensure correct format for FullCalendar
+            const formattedEvents = events.map(event => ({
+                id: event._id,
+                title: event.event_title,
+                start: event.event_start_date,
+                end: event.event_end_date
+            }));
+
+            console.log("Sending formatted events:", formattedEvents); //debug output
+
+            res.status(200).json(formattedEvents);
         } catch (error) {
             console.error("Error fetching events:", error);
             res.status(500).json({ error: error.message });
         }
     },
+
 
     //create event
     createEvent: async (req, res) => {

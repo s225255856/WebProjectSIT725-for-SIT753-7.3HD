@@ -38,7 +38,17 @@
         window.calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             selectable: true,
-            events: '/api/eventReminder',
+            events: function(fetchInfo, successCallback, failureCallback) {
+        console.log("FullCalendar is sending:", fetchInfo.startStr, fetchInfo.endStr);
+        
+        fetch(`/api/eventReminder?start=${encodeURIComponent(fetchInfo.startStr)}&end=${encodeURIComponent(fetchInfo.endStr)}`)
+            .then(response => response.json())
+            .then(events => successCallback(events))
+            .catch(error => {
+                console.error("Error fetching events:", error);
+                failureCallback(error);
+            });
+    },
             select: function(info) { //when selecting a date
                 var modal = M.Modal.getInstance(document.getElementById('modal1'));
                 modal.open();
