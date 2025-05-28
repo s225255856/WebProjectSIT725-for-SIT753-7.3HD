@@ -1,6 +1,14 @@
 const { roomId, objectRoomId, userId, userName } = window.secretAngelRoomData;
 const socket = io();
 
+function showSpinner() {
+    document.getElementById("spinner").style.display = "flex";
+}
+
+function hideSpinner() {
+    document.getElementById("spinner").style.display = "none";
+}
+
 // ===================== CHATROOM =====================
 const chatBody = document.getElementById("messages");
 
@@ -98,6 +106,8 @@ function sendInvitations() {
         return alert("Please enter at least one email.");
     }
 
+    showSpinner();
+
     socket.emit("invitePlayers", {
         roomId,
         emails: collectedEmails
@@ -143,6 +153,7 @@ function toggleReadyToStart() {
 }
 
 function revealResult() {
+    showSpinner();
     socket.emit("revealResults", { roomId });
 }
 
@@ -181,6 +192,7 @@ socket.on("budgetUpdated", (newBudget) => {
 
 
 socket.on("invitesSent", (emails) => {
+    hideSpinner();
     alert("Invitations sent to:\n" + emails.join(", "));
     collectedEmails.length = 0;
     emailList.innerHTML = "";
@@ -223,10 +235,12 @@ socket.on("readyStatusChanged", ({ members }) => {
 });
 
 socket.on("resultsRevealed", () => {
+    hideSpinner();
     alert("Results revealed!");
     window.location.reload();
 });
 
 socket.on("errorMessage", (message) => {
+    hideSpinner()
     alert("Error: " + message);
 });
