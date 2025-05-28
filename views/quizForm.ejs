@@ -1,0 +1,188 @@
+<%- include('components/header', { title: 'Quiz Form', user }) %>
+
+<!-- Page heading -->
+<section style="display: flex; justify-content: center; margin-top: 30px;">
+  <div style="text-align: center;">
+    <div style="background-color: #D65A38; padding: 10px 25px; border-radius: 12px; color: white;">
+      <h5 style="margin: 5px;">Career & Gift Match Quiz</h5>
+      <p style="margin: 0; font-size: 14px;">Find the Perfect Gift – Tailored Just for Them!</p>
+    </div>
+  </div>
+</section>
+
+<!-- Main quiz box -->
+<section style="display: flex; justify-content: center; margin-top: 20px;">
+  <div style="width: 90%; max-width: 700px; background-color: #D65A38; border-radius: 14px; padding: 20px 20px 10px 20px; position: relative;">
+
+ <form id="quizForm" class="quiz-wrapper" action="/api/posts/quizSubmit" method="POST">
+
+
+      <!-- Step 0 -->
+      <div class="quiz-step" data-step="0">
+        <p><strong>✍️ Enter Your Name</strong></p>
+        <input type="text" name="username" placeholder="Enter your name" style="padding: 10px; border-radius: 8px; width: 100%;">
+      </div>
+
+      <!-- Step 1 -->
+      <div class="quiz-step" data-step="1">
+        <p><strong>❓ Q1. Who is the gift for?</strong></p>
+        <label><input type="radio" name="recipient" value="friend" hidden><button type="button" class="quiz-option">🎓 A close friend</button></label>
+        <label><input type="radio" name="recipient" value="partner" hidden><button type="button" class="quiz-option">❤️ My partner</button></label>
+        <label><input type="radio" name="recipient" value="family" hidden><button type="button" class="quiz-option">👪 A family member</button></label>
+        <label><input type="radio" name="recipient" value="colleague" hidden><button type="button" class="quiz-option">🤝 A colleague</button></label>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="quiz-step" data-step="2">
+        <p><strong>❓ Q2. What’s their age group?</strong></p>
+        <label><input type="radio" name="age" value="under12" hidden><button type="button" class="quiz-option">🐣 Under 12</button></label>
+        <label><input type="radio" name="age" value="13to20" hidden><button type="button" class="quiz-option">🧑 13–20</button></label>
+        <label><input type="radio" name="age" value="21to35" hidden><button type="button" class="quiz-option">🧔 21–35</button></label>
+        <label><input type="radio" name="age" value="36plus" hidden><button type="button" class="quiz-option">👵 36+</button></label>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="quiz-step" data-step="3">
+        <p><strong>❓ Q3. What’s your budget range?</strong></p>
+        <label><input type="radio" name="budget" value="under20" hidden><button type="button" class="quiz-option">🪙 Under $20</button></label>
+        <label><input type="radio" name="budget" value="20to50" hidden><button type="button" class="quiz-option">💵 $20–$50</button></label>
+        <label><input type="radio" name="budget" value="50to100" hidden><button type="button" class="quiz-option">💳 $50–$100</button></label>
+        <label><input type="radio" name="budget" value="100plus" hidden><button type="button" class="quiz-option">💎 $100+</button></label>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="quiz-step" data-step="4">
+        <p><strong>❓ Q4. What’s the occasion?</strong></p>
+        <label><input type="radio" name="occasion" value="birthday" hidden><button type="button" class="quiz-option">🎂 Birthday</button></label>
+        <label><input type="radio" name="occasion" value="anniversary" hidden><button type="button" class="quiz-option">🎉 Anniversary</button></label>
+        <label><input type="radio" name="occasion" value="graduation" hidden><button type="button" class="quiz-option">🎓 Graduation</button></label>
+        <label><input type="radio" name="occasion" value="festival" hidden><button type="button" class="quiz-option">🎄 Festival/Christmas</button></label>
+        <label><input type="radio" name="occasion" value="surprise" hidden><button type="button" class="quiz-option">🎁 Just a surprise</button></label>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="quiz-step" data-step="5">
+        <p><strong>❓ Q5. What kind of personality best fits the recipient?</strong></p>
+        <label><input type="radio" name="personality" value="trendy" hidden><button type="button" class="quiz-option">🤩 Trendy and outgoing</button></label>
+        <label><input type="radio" name="personality" value="thoughtful" hidden><button type="button" class="quiz-option">📚 Thoughtful and intellectual</button></label>
+        <label><input type="radio" name="personality" value="creative" hidden><button type="button" class="quiz-option">🎨 Creative and artsy</button></label>
+        <label><input type="radio" name="personality" value="practical" hidden><button type="button" class="quiz-option">🛠️ Practical and minimalist</button></label>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="quiz-navigation" style="display: flex; justify-content: space-between; margin-top: 20px;">
+        <button type="button" id="prevBtn" onclick="nextStep(-1)" class="btn">Back</button>
+        <button type="button" id="nextBtn" onclick="nextStep(1)" class="btn">Next</button>
+        <button type="submit" id="submitBtn" class="btn" style="display:none;">Submit</button>
+
+      </div>
+
+      <!-- Progress bar -->
+      <div class="progress-container">
+        <div id="progressBar" class="progress-bar"></div>
+        <div id="progressLabel" class="progress-label">Step 1 of 6</div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<%- include('components/footer') %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  let currentStep = 0;
+  const steps = document.querySelectorAll('.quiz-step');
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const submitBtn = document.getElementById("submitBtn");
+
+  showStep(currentStep);
+
+  function showStep(n) {
+    steps.forEach((step, i) => step.style.display = i === n ? "block" : "none");
+    prevBtn.style.display = n === 0 ? "none" : "inline-block";
+    nextBtn.style.display = n === steps.length - 1 ? "none" : "inline-block";
+    submitBtn.style.display = n === steps.length - 1 ? "inline-block" : "none";
+    updateProgressBar(n);
+  }
+
+  function nextStep(n) {
+    const currentInputs = steps[currentStep].querySelectorAll("input");
+    let valid = false;
+
+    if (currentInputs.length === 1 && currentInputs[0].type === "text") {
+      valid = currentInputs[0].value.trim() !== "";
+    } else {
+      valid = Array.from(currentInputs).some(input => input.checked);
+    }
+
+    if (!valid && n === 1) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Incomplete!',
+        text: 'Please answer this question before continuing.',
+        confirmButtonColor: '#D65A38'
+      });
+      return;
+    }
+
+    currentStep += n;
+    if (currentStep >= steps.length) return;
+    showStep(currentStep);
+  }
+
+  document.querySelectorAll('.quiz-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = btn.previousElementSibling;
+      if (input) {
+        input.checked = true;
+        const group = input.name;
+        document.querySelectorAll(`input[name="${group}"] + .quiz-option`).forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      }
+    });
+  });
+
+ 
+    
+
+  function updateProgressBar(step) {
+    const percent = ((step + 1) / steps.length) * 100;
+    document.getElementById("progressBar").style.width = percent + "%";
+    document.getElementById("progressLabel").innerText = `Step ${step + 1} of ${steps.length}`;
+  }
+</script>
+
+<style>
+  .quiz-wrapper { padding-right: 10px; }
+  .quiz-step {
+    margin-bottom: 25px; background-color: #FFECE8; padding: 15px; border-radius: 12px;
+  }
+  .quiz-option {
+    display: block; background-color: white; color: #333;
+    border: 1px solid #ccc; padding: 10px 16px; margin: 8px 0;
+    border-radius: 8px; cursor: pointer; width: 100%; text-align: left;
+  }
+  .quiz-option:hover { background-color: #ffe2da; border-color: #D65A38; }
+  .quiz-option.selected {
+    background-color: #D65A38; color: white; font-weight: bold; border-color: #D65A38;
+  }
+  .quiz-navigation .btn {
+    background-color: #fff0ec; color: #D65A38; border: none;
+    padding: 10px 20px; border-radius: 10px; font-weight: bold;
+  }
+  .quiz-navigation .btn:hover { background-color: #ffe2da; }
+  .progress-container {
+    width: 100%; background-color: #fff0ec; border-radius: 25px;
+    margin-top: 30px; height: 30px; position: relative;
+  }
+  .progress-bar {
+    height: 100%; width: 0%; background: linear-gradient(90deg, #D65A38 0%, #e57a50 100%);
+    border-radius: 25px; transition: width 0.4s ease;
+  }
+  .progress-label {
+    position: absolute; width: 100%; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold;
+  }
+</style>
