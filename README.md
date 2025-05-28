@@ -4,11 +4,11 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 
 ## 💡 Project Features
 
-- 🎁 Intelligent Gift Recommendations
 - 📅 Event Planning Assistant
 - 🌍 Gift Ideas Community
 - ✅ Event Marking and Tracking System
 - 🔐 User Authentication and Role Management
+- 🎁 Gift Recommendations
 
 ## 🛠️ Tech Stack
 
@@ -28,11 +28,12 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 | Janaki Chaudhary | 224941505  |
 
 ## HI-FI Figma Prototype
-- **🎁 Intelligent Gift Recommendations** : 
 - **📅 Event Planning Assistant** :
 - [**🌍 Gift Ideas Community**](https://www.figma.com/proto/yrB3WDk7yrwd1viMnE9Mpp/GiftzyWebProject?node-id=607-27&t=1fn8KJwkaiQzboOE-1&scaling=scale-down&content-scaling=fixed&pageid=1669%3A162202&starting-point-node-id=607%3A27)
 - **🛒 Gift Marketplace** :
 - **✨ Secret Angel Game** :
+- - [**🎁Gift Recommendations** :](https://www.figma.com/design/eYVMqe8pcDNxO87Vr5MK6v/SIT725-Wireframes?node-id=1-2&t=S7klg0PxhvFi3bn7-1) 
+
   
 ## API Documentation
 
@@ -71,6 +72,33 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 /api/detailPostPage
 
 - `GET` : Load detail post page
+
+/api/posts/quizSubmit
+
+- `POST` : Submit quiz answers and receive gift suggestions
+
+/quizForm
+
+-`GET` : Load multi-step quiz form
+
+/quizAdminLogin
+
+-`GET` : Render admin login page
+-`POST` : Validate admin login
+
+/quizAdminDashboard
+
+-`GET` : Show all quiz submissions (admin only)
+
+/quizAdmin/delete/\:id
+
+-`POST` : Soft delete a quiz submission
+
+/quizAdmin/restore/\:id
+
+-`POST` : Restore a soft-deleted quiz submission
+
+
 
 ## 🚀 Getting Started
 
