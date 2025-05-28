@@ -9,11 +9,18 @@ const eventReminderController = {
     //get all events
     getEvents: async (req, res) => {
         try {
-            const events = await eventReminderService.getEvents();
-            console.log("Events:", events);
+            console.log("Received event fetch request with query:", req.query);
+
+            const { start, end } = req.query;
+            if (!start || !end) {
+                return res.status(400).json({ error: "Start and End dates are required." });
+            }
+
+            //ensure `start` and `end` are passed as Date objects
+            const events = await eventReminderService.getEvents(new Date(start), new Date(end));
             res.status(200).json(events);
         } catch (error) {
-            console.error("Error retrieving events:", error);
+            console.error("Error fetching events:", error);
             res.status(500).json({ error: error.message });
         }
     },
@@ -44,34 +51,43 @@ const eventReminderController = {
     //edit event
     editEvent: async (req, res) => {
         try {
-            const { eventId, updates } = req.body;
-            const updatedEvent = await eventReminderService.editEvent(eventId, updates);
-            io.emit('eventUpdated', updatedEvent); //real time update
+            const eventId = req.params.id;  // ✅ Extract event ID properly
+            if (!eventId) {
+                return res.status(400).json({ error: "Event ID is required." });
+            }
+            const eventData = req.body;
+            console.log("Updating Event ID:", eventId, "with data:", eventData);
+            const updatedEvent = await eventReminderService.editEvent(eventId, eventData);
             res.status(200).json(updatedEvent);
         } catch (error) {
-            res.status(500).json({error: error.message});
+            console.error("Error updating event:", error);
+            res.status(500).json({ error: error.message });
         }
     },
 
     //bulk delete events
     deleteEvents: async (req, res) => {
         try {
-            console.log("Raw Request Body:", req.body); //Debugging Step
-            if (!req.body || !req.body.eventIds) {
-                return res.status(400).json({ error: "No event IDs provided." });
+            console.log("Received delete request:", req.body);
+
+            const { eventIds } = req.body;
+            if (!eventIds || eventIds.length === 0) {
+                return res.status(400).json({ error: "No event IDs provided for deletion." });
             }
 
-            const eventIds = req.body.eventIds; //Correctly extract eventIds
-            console.log("Parsed eventIds:", eventIds); //Confirm extraction
+            const result = await eventReminderService.deleteEvents(eventIds);
 
-            const result = await eventReminderService.deleteEvents(eventIds); //Pass eventIds correctly
-            //io.emit("eventsDeleted", result); 
-            res.status(200).json(result);
+            if (result.deletedCount > 0) {
+                res.status(200).json({ message: "Events deleted successfully", deletedCount: result.deletedCount });
+            } else {
+                res.status(404).json({ error: "No matching events found to delete." });
+            }
         } catch (error) {
             console.error("Error deleting events:", error);
             res.status(500).json({ error: error.message });
         }
     },
+
 
     //send email notification
     notifyUsers: async (event) => {

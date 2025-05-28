@@ -5,7 +5,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 
 router.get('/', authMiddleware, eventReminderController.getEvents);
 router.post('/create', authMiddleware, eventReminderController.createEvent);
-router.post('/edit', authMiddleware, eventReminderController.editEvent);
+router.put('/edit/:id', authMiddleware, eventReminderController.editEvent);
 router.delete('/bulk-delete', authMiddleware, eventReminderController.deleteEvents);
 
 module.exports = router;

@@ -41,50 +41,86 @@
 
 <script>
     document.getElementById('eventForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const eventData = {
-        event_title: document.getElementById('event_title').value,
-        event_start_date: document.getElementById('event_start_date').value,
-        event_end_date: document.getElementById('event_end_date').value,
-        notif_time: document.getElementById('notif_time').value,
-        members: document.getElementById('members').value.split(',').map(id => id.trim())
-    };
+        e.preventDefault();
+        
+        const eventId = this.getAttribute("data-event-id"); //check if we are editing an event
+        const eventData = {
+            event_title: document.getElementById('event_title').value,
+            event_start_date: document.getElementById('event_start_date').value,
+            event_end_date: document.getElementById('event_end_date').value,
+            notif_time: document.getElementById('notif_time').value,
+            members: document.getElementById('members').value.split(',').map(id => id.trim())
+        };
 
-    fetch('/api/eventReminder/create', {
-        method: 'POST',
-        body: JSON.stringify(eventData),
-        headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('authenticateToken')}`
-        }
-    })
-    .then(response => response.json())  //get response as text first
-    .then(data => {
-        console.log("Server response:", data); //Logs response before converting to JSON
-        if (!data.id) {
-            console.error("Event creation failed. Missing 'id' in response.");
-            return;
-        }
+        //if eventId exists => update, If not => create
+        const url = eventId ? `/api/eventReminder/edit/${eventId}` : "/api/eventReminder/create";
+        const method = eventId ? "PUT" : "POST";
 
-    var modal = M.Modal.getInstance(document.getElementById('modal1'));
-    modal.close(); //close modal
+        // fetch('/api/eventReminder/create', {
+        //     method: 'POST',
+        //     body: JSON.stringify(eventData),
+        //     headers: { 
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${localStorage.getItem('authenticateToken')}`
+        //     }
+        // })
+        fetch(url, {
+            method: method,
+            body: JSON.stringify(eventData),
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authenticateToken')}`
+            }
+        })
+        .then(response => response.json())  //get response as text first
+        .then(data => {
+            console.log(eventId ? "Updated Event Response:" : "Created Event Response:", data); //Logs response before converting to JSON
+            // if (!data.id) {
+            //     console.error("Event creation failed. Missing 'id' in response.");
+            //     return;
+            // }
 
-    if (window.calendar) { //add event onto calendar
-        window.calendar.addEvent({
-            id: data._id,
-            title: data.event_title,
-            start: data.event_start_date,
-            end: data.event_end_date
-        });
-        window.calendar.render();
-    } else {
-        console.error("Calendar instance is not available");
-    }
+            if (window.calendar) {
+                if (eventId) {
+                    //update event in FullCalendar if editing
+                    let event = calendar.getEventById(eventId);
+                    if (event) {
+                        event.setProp("title", data.event_title);
+                        event.setDates(data.event_start_date, data.event_end_date);
+                        event.setExtendedProp("notif_time", data.notif_time);
+                        event.setExtendedProp("members", data.members);
+                    }
+                } else {
+                    //add new event to FullCalendar if creating
+                    window.calendar.addEvent({
+                        id: data.id,
+                        title: data.event_title,
+                        start: data.event_start_date,
+                        end: data.event_end_date
+                    });
+                    window.calendar.render();
+                }
+            }
 
-    document.getElementById('eventForm').reset(); //reset form
-    })
-        .catch(error => console.error("Fetch error:", error));
+        var modal = M.Modal.getInstance(document.getElementById('modal1'));
+        modal.close(); //close modal
+
+        // if (window.calendar) { //add event onto calendar
+        //     window.calendar.addEvent({
+        //         id: data._id,
+        //         title: data.event_title,
+        //         start: data.event_start_date,
+        //         end: data.event_end_date
+        //     });
+        //     window.calendar.render();
+        // } else {
+        //     console.error("Calendar instance is not available");
+        // }
+
+        document.getElementById('eventForm').reset(); //reset form
+        this.removeAttribute("data-event-id"); //reset event id 
+        })
+            .catch(error => console.error("Fetch error:", error));
     });
 
 </script>
