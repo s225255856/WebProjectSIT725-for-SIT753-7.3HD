@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f2d9d2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .admin-box {
+      background-color: #fbe7e0;
+      padding: 30px 25px;
+      border-radius: 15px;
+      width: 320px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .admin-box h5 {
+      text-align: center;
+      font-size: 20px;
+      color: #2d2d2d;
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+
+    .admin-box h5 .emoji {
+      font-size: 24px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    .input-field {
+      margin-bottom: 20px;
+    }
+
+    .input-field input {
+      width: 100%;
+      padding: 12px 10px;
+      font-size: 14px;
+      border: none;
+      background-color: #eaf4ff;
+      border-radius: 6px;
+    }
+
+    .login-btn {
+      width: 100%;
+      background-color: #d65a38;
+      border: none;
+      color: white;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .login-btn:hover {
+      background-color: #b74d2c;
+    }
+
+    .error-msg {
+      color: red;
+      text-align: center;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-box">
+    <h5><span class="emoji">🔒</span>Admin Login</h5>
+
+    <% if (error) { %>
+      <div class="error-msg"><%= error %></div>
+    <% } %>
+
+    <form method="POST" action="/quizAdminLogin">
+      <div class="input-field">
+        <input type="text" name="username" placeholder="Username" required>
+      </div>
+      <div class="input-field">
+        <input type="password" name="password" placeholder="Password" required>
+      </div>
+      <button type="submit" class="login-btn">Login</button>
+    </form>
+  </div>
+
+</body>
+</html>

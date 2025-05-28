@@ -13,10 +13,15 @@ const likeNotificationSocket = require("./sockets/likeNotificationSocket");
 const eventReminderSocker = require("./sockets/eventReminderSocket");
 validateEnv();
 
+//for Quiz Admin
+const quizAdminRoutes = require('./routes/quizAdminRoutes');
+
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+
+
 app.use(cookieParser());
 
 app.use(
@@ -62,3 +67,7 @@ if (require.main === module) {
     console.log('Server running at http://localhost:3000');
   });
 }
+//QuizAdmin
+app.use('/quizAdmin', quizAdminRoutes);
+
+

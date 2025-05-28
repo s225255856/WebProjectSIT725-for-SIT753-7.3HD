@@ -62,4 +62,17 @@ router.get('/eventReminder', authMiddleware, (req, res) => {
   res.render('eventReminder/index', { error: null, user: req.user });
 });
 
+
+//Quizform Page
+router.get('/quizForm', authMiddleware, (req, res) => {
+  res.render('quizForm', { error: null, user: req.user });
+});
+
+//Quiz recommendation page
+router.get('/quizRecommendation', authMiddleware, (req, res) => {
+  res.render('quizRecommendation', { error: null, user: req.user });
+});
+
+
+
 module.exports = router;
