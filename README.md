@@ -32,7 +32,7 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 - [**🌍 Gift Ideas Community**](https://www.figma.com/proto/yrB3WDk7yrwd1viMnE9Mpp/GiftzyWebProject?node-id=607-27&t=1fn8KJwkaiQzboOE-1&scaling=scale-down&content-scaling=fixed&pageid=1669%3A162202&starting-point-node-id=607%3A27)
 - **🛒 Gift Marketplace** :
 - **✨ Secret Angel Game** :
-- - [**🎁Gift Recommendations** :](https://www.figma.com/design/eYVMqe8pcDNxO87Vr5MK6v/SIT725-Wireframes?node-id=1-2&t=S7klg0PxhvFi3bn7-1) 
+- [**🎁Gift Recommendations** :](https://www.figma.com/design/eYVMqe8pcDNxO87Vr5MK6v/SIT725-Wireframes?node-id=1-2&t=S7klg0PxhvFi3bn7-1) 
 
   
 ## API Documentation
@@ -79,24 +79,24 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 
 /quizForm
 
--`GET` : Load multi-step quiz form
+- `GET` : Load multi-step quiz form
 
 /quizAdminLogin
 
--`GET` : Render admin login page
--`POST` : Validate admin login
+- `GET` : Render admin login page
+- `POST` : Validate admin login
 
 /quizAdminDashboard
 
--`GET` : Show all quiz submissions (admin only)
+- `GET` : Show all quiz submissions (admin only)
 
 /quizAdmin/delete/\:id
 
--`POST` : Soft delete a quiz submission
+- `POST` : Soft delete a quiz submission
 
 /quizAdmin/restore/\:id
 
--`POST` : Restore a soft-deleted quiz submission
+- `POST` : Restore a soft-deleted quiz submission
 
 
 
