@@ -10,6 +10,7 @@ const socketIo = require('socket.io');
 const validateEnv = require('./helpers/validateEnv');
 const secretAngelSocket = require("./sockets/secretAngelSocket");
 const likeNotificationSocket = require("./sockets/likeNotificationSocket");
+const eventReminderSocker = require("./sockets/eventReminderSocket");
 validateEnv();
 
 const app = express();

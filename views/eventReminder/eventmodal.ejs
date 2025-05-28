@@ -9,8 +9,8 @@
             </div>
             <div class="row">
                 <div class="input-field col s6">
-                    <input placeholder="Enter event name" id="event_name" type="text" class="validate">
-                    <label for="event_name">Event name</label>
+                    <input placeholder="Enter event name" id="event_title" type="text" class="validate">
+                    <label for="event_title">Event name</label>
                 </div>
                 <div class="input-field col s6">
                     <input id="event_start_date" type="date" class="form-control onlydatepicker">
@@ -22,7 +22,7 @@
                 </div>
                 <div class="input-field col s6">
                     <input id="notif_time" type="date" class="form-control onlydatepicker">
-                    <label for="notif_time">Notif time</label>
+                    <label for="notif_time">Notification date</label>
                 </div>
                 <div class="input-field col s6">
                     <input placeholder="Enter members email" id="members" type="text" class="validate">
@@ -44,28 +44,47 @@
     e.preventDefault();
     
     const eventData = {
-        title: document.getElementById('event_name').value,
-        startDate: document.getElementById('event_start_date').value,
-        endDate: document.getElementById('event_end_date').value,
-        notificationTime: document.getElementById('notif_time').value,
-        members: document.getElementById('members').value.split(',')
+        event_title: document.getElementById('event_title').value,
+        event_start_date: document.getElementById('event_start_date').value,
+        event_end_date: document.getElementById('event_end_date').value,
+        notif_time: document.getElementById('notif_time').value,
+        members: document.getElementById('members').value.split(',').map(id => id.trim())
     };
 
     fetch('/api/eventReminder/create', {
         method: 'POST',
         body: JSON.stringify(eventData),
-        headers: { 'Content-Type': 'application/json' }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            console.error("Event creation error:", data.error);
-        } else {
-            alert("Event successfully created!");
-            M.Modal.getInstance(document.getElementById('modal1')).close();
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authenticateToken')}`
         }
     })
-    .catch(error => console.error("Fetch error:", error));
+    .then(response => response.json())  //get response as text first
+    .then(data => {
+        console.log("Server response:", data); //Logs response before converting to JSON
+        if (!data.id) {
+            console.error("Event creation failed. Missing 'id' in response.");
+            return;
+        }
+
+    var modal = M.Modal.getInstance(document.getElementById('modal1'));
+    modal.close(); //close modal
+
+    if (window.calendar) { //add event onto calendar
+        window.calendar.addEvent({
+            id: data._id,
+            title: data.event_title,
+            start: data.event_start_date,
+            end: data.event_end_date
+        });
+        window.calendar.render();
+    } else {
+        console.error("Calendar instance is not available");
+    }
+
+    document.getElementById('eventForm').reset(); //reset form
+    })
+        .catch(error => console.error("Fetch error:", error));
     });
 
 </script>

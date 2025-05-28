@@ -15,26 +15,41 @@
         var elems = document.querySelectorAll('.modal');
         var instances = M.Modal.init(elems);
 
+        fetch('/api/eventReminder')
+            .then(response => response.text()) //get raw response instead of JSON
+            .then(text => console.log("Raw Response:", text)) //log raw response
+            .catch(error => console.error('Fetch Error:', error));
+
         var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
+        window.calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             selectable: true,
             select: function(info) { //when selecting a date
                 var modal = M.Modal.getInstance(document.getElementById('modal1'));
                 modal.open();
                 document.getElementById('event_start_date').value = info.startStr;
-                document.getElementById('event_end_date').value = info.endStr;
+                document.getElementById('event_end_date').value = info.startStr;
             },
             eventClick: function(info) { //when deleting an event
-                if (confirm('Delete this event?')) {
-                    fetch('/api/events/bulk-delete', {
-                        method: 'DELETE',
-                        body: JSON.stringify({ eventIds: [info.event.id] }),
-                        headers: { 'Content-Type': 'application/json' }
-                    }).then(() => info.event.remove());
+                if (confirm("Delete this event?")) {
+                    fetch("/api/eventReminder/bulk-delete", {
+                        method: "DELETE", // Ensure this matches backend expectation
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ eventIds: [info.event.id] }) // Correctly send IDs
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Deletion Response:", data);
+                        if (data.deletedCount > 0) {
+                            info.event.remove(); // Remove event from FullCalendar UI
+                        } else {
+                            console.error("No events were deleted.");
+                        }
+                    })
+                    .catch(error => console.error("Delete error:", error));
                 }
             },
-            //events: events,
+            events: '/api/eventReminder',
             editable: true,
             dayMaxEvents: true, //allow "more" link when too many events
             });
@@ -63,7 +78,7 @@
 
         --fc-event-bg-color: #951515;
         --fc-event-border-color: #951515;
-        --fc-event-text-color: #951515;
+        --fc-event-text-color: #fae6e6;
         --fc-event-selected-overlay-color: rgb(255, 0, 0);
 
         --fc-more-link-bg-color: #bb3a3a;

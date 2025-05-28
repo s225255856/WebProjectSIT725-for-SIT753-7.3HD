@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 
 const eventReminderSchema = new mongoose.Schema(
     {
-        event_id: {
-            type: String,
-            required: true,
-        },
         event_title: {
             type: String,
             required: true,
@@ -30,6 +26,7 @@ const eventReminderSchema = new mongoose.Schema(
         members: [{ //tagged members (not logged in person)
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
+            required: false,
         }],
     },
     { timestamps: true }
