@@ -1,0 +1,126 @@
+<div id="modal1" class="modal modal-fixed-footer">
+    <div class="row modal-content">
+        <form id="eventForm" class="col s12">
+            <div class="row">
+                <h5 class="modal-title" id="modalLabel">Add New Event</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input placeholder="Enter event name" id="event_title" type="text" class="validate">
+                    <label for="event_title">Event name</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="event_start_date" type="date" class="form-control onlydatepicker">
+                    <label for="event_start_date">Event start date</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="event_end_date" type="date" class="form-control onlydatepicker">
+                    <label for="event_end_date">Event end date</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="notif_time" type="date" class="form-control onlydatepicker">
+                    <label for="notif_time">Notification date</label>
+                </div>
+                <div class="input-field col s6">
+                    <input placeholder="Enter members email" id="members" type="text" class="validate">
+                    <label for="members">Members (comma-separated emails)</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 center-align">
+                    <button type="submit" class="waves-effect waves-light btn">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    document.getElementById('eventForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const eventId = this.getAttribute("data-event-id"); //check if we are editing an event
+        const eventData = {
+            event_title: document.getElementById('event_title').value,
+            event_start_date: document.getElementById('event_start_date').value,
+            event_end_date: document.getElementById('event_end_date').value,
+            notif_time: document.getElementById('notif_time').value,
+            members: document.getElementById('members').value.split(',').map(id => id.trim())
+        };
+
+        //if eventId exists => update, If not => create
+        const url = eventId ? `/api/eventReminder/edit/${eventId}` : "/api/eventReminder/create";
+        const method = eventId ? "PUT" : "POST";
+
+        // fetch('/api/eventReminder/create', {
+        //     method: 'POST',
+        //     body: JSON.stringify(eventData),
+        //     headers: { 
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${localStorage.getItem('authenticateToken')}`
+        //     }
+        // })
+        fetch(url, {
+            method: method,
+            body: JSON.stringify(eventData),
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authenticateToken')}`
+            }
+        })
+        .then(response => response.json())  //get response as text first
+        .then(data => {
+            console.log(eventId ? "Updated Event Response:" : "Created Event Response:", data); //Logs response before converting to JSON
+            // if (!data.id) {
+            //     console.error("Event creation failed. Missing 'id' in response.");
+            //     return;
+            // }
+
+            if (window.calendar) {
+                if (eventId) {
+                    //update event in FullCalendar if editing
+                    let event = calendar.getEventById(eventId);
+                    if (event) {
+                        event.setProp("title", data.event_title);
+                        event.setDates(data.event_start_date, data.event_end_date);
+                        event.setExtendedProp("notif_time", data.notif_time);
+                        event.setExtendedProp("members", data.members);
+                    }
+                } else {
+                    //add new event to FullCalendar if creating
+                    window.calendar.addEvent({
+                        id: data.id,
+                        title: data.event_title,
+                        start: data.event_start_date,
+                        end: data.event_end_date
+                    });
+                    window.calendar.render();
+                }
+            }
+
+        var modal = M.Modal.getInstance(document.getElementById('modal1'));
+        modal.close(); //close modal
+
+        // if (window.calendar) { //add event onto calendar
+        //     window.calendar.addEvent({
+        //         id: data._id,
+        //         title: data.event_title,
+        //         start: data.event_start_date,
+        //         end: data.event_end_date
+        //     });
+        //     window.calendar.render();
+        // } else {
+        //     console.error("Calendar instance is not available");
+        // }
+
+        document.getElementById('eventForm').reset(); //reset form
+        this.removeAttribute("data-event-id"); //reset event id 
+        })
+            .catch(error => console.error("Fetch error:", error));
+    });
+
+</script>

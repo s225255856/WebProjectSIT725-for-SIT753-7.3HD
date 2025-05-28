@@ -28,7 +28,7 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 | Janaki Chaudhary | 224941505  |
 
 ## HI-FI Figma Prototype
-- **📅 Event Planning Assistant** :
+- [**📅 Event Planning Assistant**](https://www.figma.com/proto/SkomSEUBv37MkNrlGSykxv/Event-Reminder?node-id=1-1848&p=f&t=VgbUJUZ9nTjrLNsE-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A1848&show-proto-sidebar=1)
 - [**🌍 Gift Ideas Community**](https://www.figma.com/proto/yrB3WDk7yrwd1viMnE9Mpp/GiftzyWebProject?node-id=607-27&t=1fn8KJwkaiQzboOE-1&scaling=scale-down&content-scaling=fixed&pageid=1669%3A162202&starting-point-node-id=607%3A27)
 - **🛒 Gift Marketplace** :
 - **✨ Secret Angel Game** :
@@ -99,6 +99,21 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 - `POST` : Restore a soft-deleted quiz submission
 
 
+/api/eventReminder
+
+- `GET` : Load all events on to calendar
+
+/api/eventReminder/create
+
+- `POST` : Upload/Create new event
+
+/api/eventReminder/edit/:id
+
+- `PUT` : Edit/Update selected event
+
+/api/eventReminder/bulk-delete
+
+-`DELETE`: Delete selected events
 
 ## 🚀 Getting Started
 

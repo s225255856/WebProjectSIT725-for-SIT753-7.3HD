@@ -8,11 +8,14 @@
         <%= title %>
     </title>
 
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
+
     <link rel="stylesheet" href="/css/styles.css" />
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    
     <style>
         .avatar-circle {
             display: inline-flex;
@@ -44,6 +47,7 @@
             <li><a href="/">Home</a></li>
             <li><a href="/secretAngel">Secret Angel Game</a></li>
             <li><a href="/communityMainPage">Gift Ideas Community</a></li>
+            <li><a href="/eventReminder">Event Reminder</a></li>
             <% if (user) { %>
 
                 <li>
@@ -73,6 +77,7 @@
     <li><a href="/">Home</a></li>
     <li><a href="/secretAngel">Secret Angel Game</a></li>
     <li><a href="/communityMainPage">Gift Ideas Community</a></li>
+    <li><a href="/eventReminder">Event Reminder</a></li>
     <% if (user) { %>
         <li><a href="/settings">Settings</a></li>
         <li><a href="/api/users/logout">Logout</a></li>

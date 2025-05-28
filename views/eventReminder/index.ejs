@@ -1,0 +1,173 @@
+
+<%- include('../components/header', { title: 'Event Reminder' , user }) %>
+    <h4>Event Reminder Calendar</h4>
+    <button id="bulkDeleteBtn" class="waves-effect waves-light btn red">Bulk Delete</button>
+    <button id="editEventBtn" class="waves-effect waves-light btn blue">Edit Event</button>
+    <div class="calendar-container">
+        <div class="row">
+            <div id='calendar'></div>
+        </div>
+    </div>
+
+    <%- include('../eventReminder/eventmodal') %>
+
+<%- include('../components/footer') %>
+
+<script>
+    let selectedEvents = [];
+    document.addEventListener('DOMContentLoaded', function() {      
+        let editMode = false;
+
+        // Toggle Edit Mode
+        document.getElementById("editEventBtn").addEventListener("click", function () {
+            editMode = !editMode;
+            this.textContent = editMode ? "Cancel Edit" : "Edit Event";
+            selectedEvents = [];
+            document.querySelectorAll(".fc-event").forEach(eventEl => eventEl.style.border = "none");
+        });
+        
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems);
+
+        // fetch('/api/eventReminder')
+        //     .then(response => response.text()) //get raw response instead of JSON
+        //     .then(text => console.log("Raw Response:", text)) //log raw response
+        //     .catch(error => console.error('Fetch Error:', error));
+
+        var calendarEl = document.getElementById('calendar');
+        window.calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            selectable: true,
+            events: function(fetchInfo, successCallback, failureCallback) {
+        console.log("FullCalendar is sending:", fetchInfo.startStr, fetchInfo.endStr);
+        
+        fetch(`/api/eventReminder?start=${encodeURIComponent(fetchInfo.startStr)}&end=${encodeURIComponent(fetchInfo.endStr)}`)
+            .then(response => response.json())
+            .then(events => successCallback(events))
+            .catch(error => {
+                console.error("Error fetching events:", error);
+                failureCallback(error);
+            });
+    },
+            select: function(info) { //when selecting a date
+                var modal = M.Modal.getInstance(document.getElementById('modal1'));
+                modal.open();
+                document.getElementById('event_start_date').value = info.startStr;
+                document.getElementById('event_end_date').value = info.startStr;
+            },
+            eventClick: function(info) { //when deleting an event
+                if (selectedEvents.includes(info.event.id)) {
+                    selectedEvents = selectedEvents.filter(id => id !== info.event.id);
+                    info.el.style.border = "none"; //deselect
+                } else {
+                    selectedEvents.push(info.event.id);
+                    info.el.style.border = "2px solid red"; //highlight selection
+                }
+                console.log("Selected events for deletion:", selectedEvents);
+
+                if (!editMode) return; //prevent editing if off
+                
+                //open modal for event editing
+                var modal = M.Modal.getInstance(document.getElementById("modal1"));
+                modal.open();
+
+                //pre-fill event details in the form
+                document.getElementById("event_title").value = info.event.title;
+                document.getElementById("event_start_date").value = info.event.start.toISOString().split("T")[0]; 
+                document.getElementById("event_end_date").value = info.event.end ? info.event.end.toISOString().split("T")[0] : info.event.start.toISOString().split("T")[0];
+                document.getElementById("notif_time").value = info.event.extendedProps.notif_time 
+                    ? new Date(info.event.extendedProps.notif_time).toISOString().split("T")[0] 
+                    : "";
+                document.getElementById("members").value = info.event.extendedProps.members ? info.event.extendedProps.members.join(", ") : "";
+
+                //store event ID for updating later
+                document.getElementById("eventForm").setAttribute("data-event-id", info.event.id);
+            },
+            editable: true,
+            dayMaxEvents: true, //allow "more" link when too many events
+            });
+        calendar.render();
+    });
+
+    document.getElementById("bulkDeleteBtn").addEventListener("click", function() {
+        if (selectedEvents.length === 0) {
+            alert("No events selected for deletion!");
+            return;
+        }
+
+        fetch("/api/eventReminder/bulk-delete", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ eventIds: selectedEvents }) // Send all selected IDs
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Bulk Deletion Response:", data);
+            if (data.deletedCount > 0) {
+                selectedEvents.forEach(eventId => {
+                    let event = calendar.getEventById(eventId);
+                    if (event) event.remove();
+                });
+                selectedEvents = []; // Reset selection
+            } else {
+                console.error("No events were deleted.");
+            }
+        })
+        .catch(error => console.error("Bulk delete error:", error));
+    });
+
+</script>
+
+<style>
+    :root {
+        --fc-small-font-size: .85em;
+        --fc-page-bg-color: var(--bgcolor);
+        --fc-neutral-bg-color: rgba(148, 53, 53, 0.3);
+        --fc-neutral-text-color: #951515;
+        --fc-border-color: var(--main-color);
+
+        --fc-button-text-color: #fff;
+        --fc-button-bg-color: var(--main-color);
+        --fc-button-border-color: #541111;
+        --fc-button-hover-bg-color: #4b0606;
+        --fc-button-hover-border-color: #4b1414;
+        --fc-button-active-bg-color: #4b0606;
+        --fc-button-active-border-color: #4b1414;
+
+        --fc-list-event-dot-width: 10px;
+        --fc-list-event-hover-bg-color: rgba(255, 94, 49, 0.269);
+
+        --fc-event-bg-color: #951515;
+        --fc-event-border-color: #951515;
+        --fc-event-text-color: #fae6e6;
+        --fc-event-selected-overlay-color: rgb(23, 159, 28);
+
+        --fc-more-link-bg-color: #bb3a3a;
+        --fc-more-link-text-color: #951515;
+
+        --fc-event-resizer-thickness: 8px;
+        --fc-event-resizer-dot-total-width: 8px;
+        --fc-event-resizer-dot-border-width: 1px;
+
+        --fc-non-business-color: rgb(215, 215, 215);
+        --fc-bg-event-color: rgb(255, 225, 0);
+        --fc-bg-event-opacity: 1;
+        --fc-highlight-color: rgba(255, 55, 0, 0.429);
+        --fc-today-bg-color: var(--soft-pink);
+        --fc-now-indicator-color: rgb(25, 136, 36);
+    }
+
+    .calendar-container {
+        background-color: var(--secondary-color);
+        text-align: center;
+        height: 100%;
+        overflow: auto;
+        padding: 5%;
+    }
+
+
+    .title {
+        font-size: 36px;
+    }
+</style>
+

@@ -58,4 +58,8 @@ router.get('/communityMainPage', authMiddleware, postController.getCommunityMain
 
 router.get('/detailPostPage', authMiddleware, postController.getDetailPostPage);
 
+router.get('/eventReminder', authMiddleware, (req, res) => {
+  res.render('eventReminder/index', { error: null, user: req.user });
+});
+
 module.exports = router;
