@@ -18,20 +18,19 @@ const eventReminderSchema = new mongoose.Schema(
             type: Date,
             required: true,
         },
-        // time: {
-        //     type: String,
-        //     required: true,
-        // },
-        // host: {
-        //     type: mongoose.Schema.Types.ObjectId,
-        //     ref: 'User',
-        //     required: true,
-        // },
-        // members: [{
-        //     type: mongoose.Schema.Types.ObjectId,
-        //     ref: 'User',
-        //     required: true,
-        // }],
+        notif_time: { //when to send notif
+            type: Date,
+            required: true,
+        },
+        host: { //the logged in person
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+        },
+        members: [{ //tagged members (not logged in person)
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        }],
     },
     { timestamps: true }
 );
