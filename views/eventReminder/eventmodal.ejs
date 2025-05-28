@@ -13,7 +13,7 @@
                     <label for="event_name">Event name</label>
                 </div>
                 <div class="input-field col s6">
-                    <input id="event_start_date" type="text" class="form-control onlydatepicker">
+                    <input id="event_start_date" type="date" class="form-control onlydatepicker">
                     <label for="event_start_date">Event start date</label>
                 </div>
                 <div class="input-field col s6">
@@ -50,7 +50,7 @@
             members: document.getElementById('members').value.split(',')
         };
 
-        fetch('/api/events/create', {
+        fetch('/api/eventReminder/create', {
             method: 'POST',
             body: JSON.stringify(eventData),
             headers: { 'Content-Type': 'application/json' }
