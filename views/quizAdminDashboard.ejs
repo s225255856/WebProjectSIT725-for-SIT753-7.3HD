@@ -1,0 +1,170 @@
+<%- include('components/header', { title: 'Admin Dashboard', user: null }) %>
+
+<section style="padding: 30px;">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h4 style="color: #D65A38; font-weight: bold;">Admin Dashboard</h4>
+    <a href="/quizAdminLogout" class="btn red" style="padding: 8px 16px;">Logout</a>
+  </div>
+
+  <div style="margin-top: 25px;">
+    <h5 style="margin-bottom: 10px;">All Submissions</h5>
+    <div style="overflow-x: auto; max-height: 225px; border-radius: 8px; border: 1px solid #ddd;">
+      <table class="highlight centered striped">
+        <thead style="background-color: #fdd4c7; position: sticky; top: 0;">
+          <tr>
+            <th>Username</th><th>Recipient</th><th>Age</th><th>Budget</th><th>Occasion</th><th>Personality</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% allSubmissions.forEach(sub => { %>
+            <tr>
+              <td><%= sub.username %></td>
+              <td><%= sub.recipient %></td>
+              <td><%= sub.age %></td>
+              <td><%= sub.budget %></td>
+              <td><%= sub.occasion %></td>
+              <td><%= sub.personality %></td>
+              <td>
+                <form action="/quizAdmin/delete/<%= sub._id %>" method="POST" onsubmit="return confirm('Are you sure?');">
+                  <button class="btn red btn-small">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top: 20px; display: flex; gap: 12px;">
+      <button onclick="toggleSection('uniqueSection')" class="btn green">Show Unique</button>
+      <button onclick="toggleSection('illogicalSection')" class="btn red">Show Illogical</button>
+      <button onclick="toggleSection('trashSection')" class="btn grey">Show Trash</button>
+      <button onclick="toggleSection('duplicateSection')" class="btn orange">Show Duplicates</button>
+
+    </div>
+  </div>
+
+  <div id="uniqueSection" style="display: none; margin-top: 40px;">
+    <h5>Filtered Unique Submissions</h5>
+    <div style="overflow-x: auto; max-height: 225px; border-radius: 8px; border: 1px solid #ddd;">
+      <table class="highlight centered">
+        <thead style="background-color: #cfe6ff; position: sticky; top: 0;">
+          <tr>
+            <th>Username</th><th>Recipient</th><th>Age</th><th>Budget</th><th>Occasion</th><th>Personality</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% uniqueSubmissions.forEach(sub => { %>
+            <tr>
+              <td><%= sub.username %></td>
+              <td><%= sub.recipient %></td>
+              <td><%= sub.age %></td>
+              <td><%= sub.budget %></td>
+              <td><%= sub.occasion %></td>
+              <td><%= sub.personality %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="illogicalSection" style="display: none; margin-top: 40px;">
+    <h5>Illogical Submissions</h5>
+    <div style="overflow-x: auto; max-height: 225px; border-radius: 8px; border: 1px solid #ddd;">
+      <table class="highlight centered">
+        <thead style="background-color: #ffe5e5; position: sticky; top: 0;">
+          <tr>
+            <th>Username</th><th>Recipient</th><th>Age</th><th>Budget</th><th>Occasion</th><th>Personality</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% illogicalSubmissions.forEach(sub => { %>
+            <tr>
+              <td><%= sub.username %></td>
+              <td><%= sub.recipient %></td>
+              <td><%= sub.age %></td>
+              <td><%= sub.budget %></td>
+              <td><%= sub.occasion %></td>
+              <td><%= sub.personality %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="trashSection" style="display: none; margin-top: 40px;">
+    <h5>Trashed Submissions</h5>
+    <div style="overflow-x: auto; max-height: 225px; border-radius: 8px; border: 1px solid #ddd;">
+      <table class="highlight centered">
+        <thead style="background-color: #eeeeee; position: sticky; top: 0;">
+          <tr>
+            <th>Username</th><th>Recipient</th><th>Age</th><th>Budget</th><th>Occasion</th><th>Personality</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% deletedSubmissions.forEach(sub => { %>
+            <tr>
+              <td><%= sub.username %></td>
+              <td><%= sub.recipient %></td>
+              <td><%= sub.age %></td>
+              <td><%= sub.budget %></td>
+              <td><%= sub.occasion %></td>
+              <td><%= sub.personality %></td>
+              <td>
+                <form action="/quizAdmin/restore/<%= sub._id %>" method="POST">
+                  <button class="btn green btn-small">Restore</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="duplicateSection" style="display: none; margin-top: 40px;">
+  <h5>Duplicated Submissions</h5>
+  <div style="overflow-x: auto; max-height: 225px; border-radius: 8px; border: 1px solid #ddd;">
+    <table class="highlight centered">
+      <thead style="background-color: #fff3cd; position: sticky; top: 0;">
+        <tr>
+          <th>Username</th><th>Recipient</th><th>Age</th><th>Budget</th><th>Occasion</th><th>Personality</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% duplicatedSubmissions.forEach(sub => { %>
+          <tr>
+            <td><%= sub.username %></td>
+            <td><%= sub.recipient %></td>
+            <td><%= sub.age %></td>
+            <td><%= sub.budget %></td>
+            <td><%= sub.occasion %></td>
+            <td><%= sub.personality %></td>
+            <td>
+              <form action="/quizAdmin/delete/<%= sub._id %>" method="POST" onsubmit="return confirm('Delete this duplicate entry?');">
+                <button class="btn red btn-small">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  
+</section>
+
+<script>
+  function toggleSection(id) {
+    document.getElementById('uniqueSection').style.display = 'none';
+    document.getElementById('illogicalSection').style.display = 'none';
+    document.getElementById('trashSection').style.display = 'none';
+    document.getElementById('duplicateSection').style.display = 'none';
+    document.getElementById(id).style.display = 'block';
+  }
+</script>
+
+<%- include('components/footer') %>
