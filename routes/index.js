@@ -8,12 +8,18 @@ const pageRouter = require('./pageRoutes');
 const postRouter = require('./postRoutes');
 const secretAngelRouter = require('./secretAngelRoutes');
 
+//Quiz Admin Dashboard Routes
+const quizAdminRoutes = require('./quizAdminRoutes');
+
 router.use('/', pageRouter);
 
 router.use('/api/users', usersRouter);
 
 router.use('/api/posts', postRouter);
 router.use('/api/secretAngel', secretAngelRouter);
+
+
+router.use('/', quizAdminRoutes);
 
 
 
