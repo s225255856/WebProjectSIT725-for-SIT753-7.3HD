@@ -38,7 +38,7 @@ const userController = {
         res.status(401).json({ message: 'Invalid credentials' });
       }
     } catch (error) {
-      res.status(500).json({ message: 'Server error', error: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
   signup: async (req, res) => {
@@ -65,7 +65,7 @@ const userController = {
   resetPassword: async (req, res) => {
     try {
       const { token, password } = req.body;
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
       if (decoded.tokenType !== 'reset') {
         return res.status(400).json({ message: 'Invalid token type' });
       }
@@ -123,18 +123,30 @@ const userController = {
         avatar: finalAvatar,
       });
 
+      if (!updatedUser) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
       const token = jwt.sign(
         {
           id: updatedUser._id,
           name: updatedUser.name,
           avatar: updatedUser.avatar,
         },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || 'default_secret',
       );
       res.cookie('token', token, { httpOnly: true });
-
-      res.redirect('/');
+      res.json({
+        message: 'Settings updated successfully',
+        user: {
+          id: updatedUser._id,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          avatar: updatedUser.avatar,
+        },
+      });
     } catch (error) {
+      console.log(error)
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   },
@@ -194,6 +206,22 @@ const userController = {
       res.status(400).json({ message: error.message, success: false });
     }
   },
+  softDeleteUser: async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+      const updatedUser = await userService.softDeleteUser(userId);
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.json({ message: 'User soft deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  }
+
 };
 
 module.exports = userController;

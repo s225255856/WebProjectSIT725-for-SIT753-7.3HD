@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
 const jwt = require('jsonwebtoken');
-
+const { postController } = require('../controllers');
+const secretAngelRouter = require('./pages/secretAngelPages');
 
 
 router.get('/', authMiddleware, (req, res) => {
@@ -26,7 +27,7 @@ router.get('/reset-password/:token', (req, res) => {
   const { token } = req.params;
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
     if (decoded.tokenType !== 'reset') {
       throw new Error('Invalid token type');
     }
@@ -46,9 +47,16 @@ router.get('/reset-password/:token', (req, res) => {
   }
 });
 
-router.get('/secret-angel', authMiddleware, (req, res) => {
-  res.render('secretAngel/index', { error: null, user: req.user });
+router.use('/secretAngel', authMiddleware, secretAngelRouter);
+
+
+router.get('/addPost', authMiddleware, (req, res) => {
+  res.render('addPostCommunity', { error: null, user: req.user });
 });
+
+router.get('/communityMainPage', authMiddleware, postController.getCommunityMainPage);
+
+router.get('/detailPostPage', authMiddleware, postController.getDetailPostPage);
 
 router.get('/event-reminder', authMiddleware, (req, res) => {
   res.render('eventReminder/index', { error: null, user: req.user });

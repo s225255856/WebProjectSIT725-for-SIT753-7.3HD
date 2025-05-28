@@ -27,21 +27,50 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 | Nethmi Weeraman  | 224350062  |
 | Janaki Chaudhary | 224941505  |
 
+## HI-FI Figma Prototype
+- **🎁 Intelligent Gift Recommendations** : 
+- **📅 Event Planning Assistant** :
+- [**🌍 Gift Ideas Community**](https://www.figma.com/proto/yrB3WDk7yrwd1viMnE9Mpp/GiftzyWebProject?node-id=607-27&t=1fn8KJwkaiQzboOE-1&scaling=scale-down&content-scaling=fixed&pageid=1669%3A162202&starting-point-node-id=607%3A27)
+- **🛒 Gift Marketplace** :
+- **✨ Secret Angel Game** :
+  
 ## API Documentation
+
 /api/users
+
 - `GET` : Get all users
 
 /api/users/google
+
 - `GET` : Authenticate user login by Google
 
 /api/users/login
+
 - `POST` : User login
 
 /api/users/forget-password
+
 - `POST` : user forget password
 
 /api/posts/addpost
+
 - `POST` : Upload new Post
+
+/api/posts/loadMorePosts
+
+- `GET` : Load more 5 Posts
+
+/api/posts/like/:postId
+
+- `POST` : Toggle like a post
+
+/api/communityMainPage
+
+- `GET` : Load gift ideas community page
+
+/api/detailPostPage
+
+- `GET` : Load detail post page
 
 ## 🚀 Getting Started
 
@@ -76,6 +105,7 @@ GOOGLE_CLIENT_SECRET=
 ```
 
 4. To run the project, use this command:
+
 ```
 npm run start
 ```
@@ -85,3 +115,45 @@ npm run start
 ```
 http://localhost:3000
 ```
+
+6. Backend Architecture Summary
+
+```mermaid
+flowchart TD
+    subgraph Client["Browser (Client)"]
+        A[EJS Templates] -->|Fetch API| B[HTTP Requests]
+        A -->|WebSocket| C[Socket.IO Client]
+    end
+
+    subgraph Server["Node.js Server"]
+        B --> D[Express Routes]
+        D --> E[Controllers]
+        E --> F[Services]
+        F --> G[(MongoDB)]
+
+        C --> H[Socket.IO Server]
+        H --> I[Socket Handlers]
+        I -->|Read/Write| G
+        I -->|Broadcast| C
+
+        %% Email Service Integration
+        F --> J[Email Service]
+        J -->|SendGrid/Nodemailer| K[(SMTP Server)]
+        I -->|Trigger Emails| J
+    end
+
+    A -->|Render| L[HTML/CSS/JS]
+    L -->|Display| Client
+    F -->|Return Data| E
+    E -->|JSON| D
+    D -->|JSON| B
+
+    %% Email Triggers
+    E -->|User Signup| J
+    F -->|Password Reset| J
+    I -->|Game Invites| J
+```
+
+_Diagram created by Tsz Hin Yee (223983938)_
+
+https://deakin365-my.sharepoint.com/:w:/g/personal/s223983938_deakin_edu_au/EQw_A4UQl99PktAWoutjvIkBtAvXk3CUKvHzwA9ePMLXiA?e=qI0UNy
