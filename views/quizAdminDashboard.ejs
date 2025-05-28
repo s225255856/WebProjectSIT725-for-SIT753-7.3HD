@@ -1,9 +1,56 @@
-<%- include('components/header', { title: 'Admin Dashboard', user: null }) %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f2d9d2;
+      font-family: 'Roboto', sans-serif;
+    }
+    section {
+      padding: 30px;
+    }
+    h4 {
+      color: #D65A38;
+      font-weight: bold;
+    }
+    .logout-btn {
+      padding: 8px 16px;
+      background-color: #d65a38;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    .logout-btn:hover {
+      background-color: #b84a2c;
+    }
+    table {
+      margin-bottom: 0;
+    }
+    .btn-small {
+      padding: 0 10px;
+    }
+    .btn-bar {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+    }
+    .section-box {
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
 
-<section style="padding: 30px;">
+<section>
   <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h4 style="color: #D65A38; font-weight: bold;">Admin Dashboard</h4>
-    <a href="/quizAdminLogout" class="btn red" style="padding: 8px 16px;">Logout</a>
+    <h4>Admin Dashboard</h4>
+    <a href="/quizAdminLogout" class="btn logout-btn">Logout</a>
   </div>
 
   <div style="margin-top: 25px;">
@@ -35,16 +82,15 @@
       </table>
     </div>
 
-    <div style="margin-top: 20px; display: flex; gap: 12px;">
+    <div class="btn-bar">
       <button onclick="toggleSection('uniqueSection')" class="btn green">Show Unique</button>
       <button onclick="toggleSection('illogicalSection')" class="btn red">Show Illogical</button>
       <button onclick="toggleSection('trashSection')" class="btn grey">Show Trash</button>
       <button onclick="toggleSection('duplicateSection')" class="btn orange">Show Duplicates</button>
-
     </div>
   </div>
 
-  <div id="uniqueSection" style="display: none; margin-top: 40px;">
+  <div id="uniqueSection" class="section-box" style="display: none;">
     <h5>Filtered Unique Submissions</h5>
     <div style="overflow-x: auto; max-height: 225px; border-radius: 8px; border: 1px solid #ddd;">
       <table class="highlight centered">
@@ -69,7 +115,7 @@
     </div>
   </div>
 
-  <div id="illogicalSection" style="display: none; margin-top: 40px;">
+  <div id="illogicalSection" class="section-box" style="display: none;">
     <h5>Illogical Submissions</h5>
     <div style="overflow-x: auto; max-height: 225px; border-radius: 8px; border: 1px solid #ddd;">
       <table class="highlight centered">
@@ -94,7 +140,7 @@
     </div>
   </div>
 
-  <div id="trashSection" style="display: none; margin-top: 40px;">
+  <div id="trashSection" class="section-box" style="display: none;">
     <h5>Trashed Submissions</h5>
     <div style="overflow-x: auto; max-height: 225px; border-radius: 8px; border: 1px solid #ddd;">
       <table class="highlight centered">
@@ -124,37 +170,35 @@
     </div>
   </div>
 
-  <div id="duplicateSection" style="display: none; margin-top: 40px;">
-  <h5>Duplicated Submissions</h5>
-  <div style="overflow-x: auto; max-height: 225px; border-radius: 8px; border: 1px solid #ddd;">
-    <table class="highlight centered">
-      <thead style="background-color: #fff3cd; position: sticky; top: 0;">
-        <tr>
-          <th>Username</th><th>Recipient</th><th>Age</th><th>Budget</th><th>Occasion</th><th>Personality</th><th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% duplicatedSubmissions.forEach(sub => { %>
+  <div id="duplicateSection" class="section-box" style="display: none;">
+    <h5>Duplicated Submissions</h5>
+    <div style="overflow-x: auto; max-height: 225px; border-radius: 8px; border: 1px solid #ddd;">
+      <table class="highlight centered">
+        <thead style="background-color: #fff3cd; position: sticky; top: 0;">
           <tr>
-            <td><%= sub.username %></td>
-            <td><%= sub.recipient %></td>
-            <td><%= sub.age %></td>
-            <td><%= sub.budget %></td>
-            <td><%= sub.occasion %></td>
-            <td><%= sub.personality %></td>
-            <td>
-              <form action="/quizAdmin/delete/<%= sub._id %>" method="POST" onsubmit="return confirm('Delete this duplicate entry?');">
-                <button class="btn red btn-small">Delete</button>
-              </form>
-            </td>
+            <th>Username</th><th>Recipient</th><th>Age</th><th>Budget</th><th>Occasion</th><th>Personality</th><th>Action</th>
           </tr>
-        <% }) %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% duplicatedSubmissions.forEach(sub => { %>
+            <tr>
+              <td><%= sub.username %></td>
+              <td><%= sub.recipient %></td>
+              <td><%= sub.age %></td>
+              <td><%= sub.budget %></td>
+              <td><%= sub.occasion %></td>
+              <td><%= sub.personality %></td>
+              <td>
+                <form action="/quizAdmin/delete/<%= sub._id %>" method="POST" onsubmit="return confirm('Delete this duplicate entry?');">
+                  <button class="btn red btn-small">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
-
-  
 </section>
 
 <script>
@@ -167,4 +211,5 @@
   }
 </script>
 
-<%- include('components/footer') %>
+</body>
+</html>
