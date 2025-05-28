@@ -72,6 +72,22 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 
 - `GET` : Load detail post page
 
+/api/eventReminder
+
+- `GET` : Load all events on to calendar
+
+/api/eventReminder/create
+
+- `POST` : Upload/Create new event
+
+/api/eventReminder/edit/:id
+
+- `PUT` : Edit/Update selected event
+
+/api/eventReminder/bulk-delete
+
+-`DELETE`: Delete selected events
+
 ## 🚀 Getting Started
 
 ### Prerequisites
