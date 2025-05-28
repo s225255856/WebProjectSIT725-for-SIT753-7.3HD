@@ -1,5 +1,5 @@
 const eventReminderService = require('../services/eventReminderService');
-const eventRemminder = require('../models/eventReminder');
+const Event = require('../models/eventReminder');
 const nodemailer = require('nodemailer');
 const { io } = require('../sockets/eventReminderSocket');
 
@@ -61,8 +61,8 @@ const eventReminderController = {
         const mailOptions = {
             from: 'your-email@gmail.com',
             to: event.members.join(','),
-            subject: `Reminder: ${event.title}`,
-            text: `You have an upcoming event: ${event.title} on ${event.startDate}`
+            subject: `Reminder: ${event.event_title}`,
+            text: `You have an upcoming event: ${event.event_title} on ${event.event_start_date}`
         };
 
         transporter.sendMail(mailOptions, (err, info) => {
