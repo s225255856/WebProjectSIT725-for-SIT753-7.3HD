@@ -56,16 +56,17 @@ const eventReminderController = {
     //bulk delete events
     deleteEvents: async (req, res) => {
         try {
-        console.log("Received Request:", req.body); //debugging step
+            console.log("Raw Request Body:", req.body); //Debugging Step
+            if (!req.body || !req.body.eventIds) {
+                return res.status(400).json({ error: "No event IDs provided." });
+            }
 
-        const { eventIds } = req.body;
-        if (!eventIds || eventIds.length === 0) {
-            return res.status(400).json({ error: "No event IDs provided for deletion." });
-        }
+            const eventIds = req.body.eventIds; //Correctly extract eventIds
+            console.log("Parsed eventIds:", eventIds); //Confirm extraction
 
-        const result = await eventReminderService.deleteEvents(eventIds);
-        io.emit("eventsDeleted", eventIds);
-        res.status(200).json(result);
+            const result = await eventReminderService.deleteEvents(eventIds); //Pass eventIds correctly
+            //io.emit("eventsDeleted", result); 
+            res.status(200).json(result);
         } catch (error) {
             console.error("Error deleting events:", error);
             res.status(500).json({ error: error.message });

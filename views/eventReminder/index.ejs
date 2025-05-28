@@ -15,10 +15,10 @@
         var elems = document.querySelectorAll('.modal');
         var instances = M.Modal.init(elems);
 
-        fetch('/api/eventReminder')
-            .then(response => response.text()) //get raw response instead of JSON
-            .then(text => console.log("Raw Response:", text)) //log raw response
-            .catch(error => console.error('Fetch Error:', error));
+        // fetch('/api/eventReminder')
+        //     .then(response => response.text()) //get raw response instead of JSON
+        //     .then(text => console.log("Raw Response:", text)) //log raw response
+        //     .catch(error => console.error('Fetch Error:', error));
 
         var calendarEl = document.getElementById('calendar');
         window.calendar = new FullCalendar.Calendar(calendarEl, {
@@ -32,16 +32,20 @@
             },
             eventClick: function(info) { //when deleting an event
                 if (confirm("Delete this event?")) {
+                    const eventIds = [info.event.id]; // Try '_id' if your event object has it
+
+                    console.log("Attempting to delete event:", eventIds); //Log the request before sending
+
                     fetch("/api/eventReminder/bulk-delete", {
-                        method: "DELETE", // Ensure this matches backend expectation
+                        method: "DELETE",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ eventIds: [info.event.id] }) // Correctly send IDs
+                        body: JSON.stringify({ eventIds }) // Send event IDs correctly
                     })
                     .then(response => response.json())
                     .then(data => {
                         console.log("Deletion Response:", data);
                         if (data.deletedCount > 0) {
-                            info.event.remove(); // Remove event from FullCalendar UI
+                            info.event.remove(); // Remove from FullCalendar UI
                         } else {
                             console.error("No events were deleted.");
                         }

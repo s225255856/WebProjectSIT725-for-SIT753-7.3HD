@@ -46,14 +46,19 @@ const eventReminderService = {
         }
     },
 
-    deleteEvents: async (id) => {
+    deleteEvents: async (eventIds) => {
         try {
+            console.log("Attempting to delete event IDs:", eventIds); //Debug log
+
             const result = await EventReminder.deleteMany({ _id: { $in: eventIds } });
+            console.log("MongoDB Deletion Result:", result); //Confirm deletion
+
             if (result.deletedCount === 0) {
                 throw new Error("No events were deleted. Ensure valid IDs are provided.");
             }
             return { message: "Events deleted successfully", deletedCount: result.deletedCount };
         } catch (error) {
+            console.error("Error deleting events:", error);
             throw new Error(`Error deleting events: ${error.message}`);
         }
     }
