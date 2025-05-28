@@ -1,6 +1,6 @@
 <div id="modal1" class="modal modal-fixed-footer">
     <div class="row modal-content">
-        <form class="col s12">
+        <form id="eventForm" class="col s12">
             <div class="row">
                 <h5 class="modal-title" id="modalLabel">Add New Event</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -41,19 +41,31 @@
 
 <script>
     document.getElementById('eventForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const eventData = {
-            title: document.getElementById('event_name').value,
-            startDate: document.getElementById('event_start_date').value,
-            endDate: document.getElementById('event_end_date').value,
-            notificationTime: document.getElementById('notif_time').value,
-            members: document.getElementById('members').value.split(',')
-        };
+    e.preventDefault();
+    
+    const eventData = {
+        title: document.getElementById('event_name').value,
+        startDate: document.getElementById('event_start_date').value,
+        endDate: document.getElementById('event_end_date').value,
+        notificationTime: document.getElementById('notif_time').value,
+        members: document.getElementById('members').value.split(',')
+    };
 
-        fetch('/api/eventReminder/create', {
-            method: 'POST',
-            body: JSON.stringify(eventData),
-            headers: { 'Content-Type': 'application/json' }
-        }).then(() => M.Modal.getInstance(document.getElementById('modal1')).close());
+    fetch('/api/eventReminder/create', {
+        method: 'POST',
+        body: JSON.stringify(eventData),
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            console.error("Event creation error:", data.error);
+        } else {
+            alert("Event successfully created!");
+            M.Modal.getInstance(document.getElementById('modal1')).close();
+        }
+    })
+    .catch(error => console.error("Fetch error:", error));
     });
+
 </script>
