@@ -32,7 +32,7 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 
 - [**📅 Event Planning Assistant**](https://www.figma.com/proto/SkomSEUBv37MkNrlGSykxv/Event-Reminder?node-id=1-1848&p=f&t=VgbUJUZ9nTjrLNsE-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A1848&show-proto-sidebar=1)
 - [**🌍 Gift Ideas Community**](https://www.figma.com/proto/yrB3WDk7yrwd1viMnE9Mpp/GiftzyWebProject?node-id=607-27&t=1fn8KJwkaiQzboOE-1&scaling=scale-down&content-scaling=fixed&pageid=1669%3A162202&starting-point-node-id=607%3A27)
-- **🛒 Gift Marketplace** :
+- [**🛒 Gift Marketplace**](https://www.figma.com/design/5vF8x74SlLwsFqiBQ5FEQj/SmartWallet---Webversion?node-id=0-1&t=BzZxjubqY6U6FOOn-1)
 - **✨ Secret Angel Game** :
 - [**🎁Gift Recommendations** :](https://www.figma.com/design/eYVMqe8pcDNxO87Vr5MK6v/SIT725-Wireframes?node-id=1-2&t=S7klg0PxhvFi3bn7-1)
 
