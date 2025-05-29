@@ -28,13 +28,13 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 | Janaki Chaudhary | 224941505  |
 
 ## HI-FI Figma Prototype
+
 - [**📅 Event Planning Assistant**](https://www.figma.com/proto/SkomSEUBv37MkNrlGSykxv/Event-Reminder?node-id=1-1848&p=f&t=VgbUJUZ9nTjrLNsE-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A1848&show-proto-sidebar=1)
 - [**🌍 Gift Ideas Community**](https://www.figma.com/proto/yrB3WDk7yrwd1viMnE9Mpp/GiftzyWebProject?node-id=607-27&t=1fn8KJwkaiQzboOE-1&scaling=scale-down&content-scaling=fixed&pageid=1669%3A162202&starting-point-node-id=607%3A27)
 - **🛒 Gift Marketplace** :
 - **✨ Secret Angel Game** :
-- [**🎁Gift Recommendations** :](https://www.figma.com/design/eYVMqe8pcDNxO87Vr5MK6v/SIT725-Wireframes?node-id=1-2&t=S7klg0PxhvFi3bn7-1) 
+- [**🎁Gift Recommendations** :](https://www.figma.com/design/eYVMqe8pcDNxO87Vr5MK6v/SIT725-Wireframes?node-id=1-2&t=S7klg0PxhvFi3bn7-1)
 
-  
 ## API Documentation
 
 /api/users
@@ -97,7 +97,6 @@ Giftzy is a web application built using **Node.js** that provides smart solution
 /quizAdmin/restore/\:id
 
 - `POST` : Restore a soft-deleted quiz submission
-
 
 /api/eventReminder
 
@@ -200,3 +199,7 @@ flowchart TD
 _Diagram created by Tsz Hin Yee (223983938)_
 
 https://deakin365-my.sharepoint.com/:w:/g/personal/s223983938_deakin_edu_au/EQw_A4UQl99PktAWoutjvIkBtAvXk3CUKvHzwA9ePMLXiA?e=qI0UNy
+
+7. Test Cases Doc For User and Secret Angel related logic
+
+https://deakin365-my.sharepoint.com/:w:/g/personal/s223983938_deakin_edu_au/EawNYWgHuZ5NmokfaoKF5BIBbbR8fsUuaIEbLx8ngDJX2Q?e=hqAQsf
