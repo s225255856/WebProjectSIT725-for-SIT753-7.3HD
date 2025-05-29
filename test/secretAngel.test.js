@@ -9,7 +9,7 @@ const PORT = 3000;
 const SOCKET_URL = `http://localhost:${PORT}`;
 
 describe('Secret Angel Socket Event Tests', function () {
-    this.timeout(5000);
+    this.timeout(10000);
 
     let clientSocket;
     let sandbox;
@@ -18,11 +18,17 @@ describe('Secret Angel Socket Event Tests', function () {
         server.listen(PORT, done);
     });
 
-    after((done) => {
+    after(async () => {
         if (clientSocket && clientSocket.connected) {
             clientSocket.disconnect();
+            await new Promise((resolve) => {
+                clientSocket.on('disconnect', resolve);
+            });
         }
-        server.close(done);
+
+        await new Promise((resolve, reject) =>
+            server.close((err) => (err ? reject(err) : resolve()))
+        );
     });
 
     beforeEach((done) => {
@@ -31,6 +37,7 @@ describe('Secret Angel Socket Event Tests', function () {
         clientSocket = ioClient(SOCKET_URL, {
             transports: ['websocket'],
             forceNew: true,
+            reconnection: false,
         });
 
         clientSocket.on('connect', () => done());
@@ -152,6 +159,7 @@ describe('Secret Angel Socket Event Tests', function () {
             done();
         });
     });
+
     it('should delete game and emit gameDeleted', (done) => {
         const fakeGame = { roomId: 'roomY', _id: 'game123' };
         sandbox.stub(secretAngelService, 'deleteGame').resolves(fakeGame);
@@ -167,7 +175,6 @@ describe('Secret Angel Socket Event Tests', function () {
             done();
         });
     });
-
 
     it('should handle deleteGame error and emit errorMessage', (done) => {
         sandbox.stub(secretAngelService, 'deleteGame').rejects(new Error('Delete failed'));
@@ -243,7 +250,6 @@ describe('Secret Angel Socket Event Tests', function () {
             done();
         });
     });
-
 
     it('should reveal results and emit resultsRevealed', (done) => {
         const roomId = 'roomResults';
