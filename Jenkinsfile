@@ -9,6 +9,8 @@ pipeline {
         DOCKER_REGISTRY = 'docker.io/s225255856'
         IMAGE_NAME = '73hd-image'
         VERSION = "${BUILD_NUMBER}"
+        MONGO_URI=credentials('MONGO_URI')
+        JWT_SECRET=credentials('JWT_SECRET')
         GOOGLE_CLIENT_ID=credentials('GOOGLE_CLIENT_ID') //get GOOGLE_CLIENT_ID
         GOOGLE_CLIENT_SECRET=credentials('GOOGLE_CLIENT_SECRET') //get GOOGLE_CLIENT_SECRET
         USERNAME = 'Alex'
