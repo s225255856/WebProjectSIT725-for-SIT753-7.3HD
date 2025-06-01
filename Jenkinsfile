@@ -41,7 +41,7 @@ pipeline {
         }
         stage('Test image') {
             steps {
-                bat 'docker run -p 3002:3000 --build-arg GOOGLE_CLIENT_ID=%GOOGLE_CLIENT_ID% %IMAGE_NAME%:%VERSION%'
+                bat 'docker run --build-arg GOOGLE_CLIENT_ID=%GOOGLE_CLIENT_ID% %IMAGE_NAME%:%VERSION%'
             }
         }
         stage('Push to Registry') { //save
