@@ -11,6 +11,7 @@ pipeline {
         VERSION = "${BUILD_NUMBER}"
         GOOGLE_CLIENT_ID=credentials('GOOGLE_CLIENT_ID') //get GOOGLE_CLIENT_ID
         GOOGLE_CLIENT_SECRET=credentials('GOOGLE_CLIENT_SECRET') //get GOOGLE_CLIENT_SECRET
+        USERNAME = 'Alex'
     }
 
     stages {
@@ -27,12 +28,13 @@ pipeline {
 
         //BUILD STAGE
 
-        // stage('Cleanup Old Logs') { //clean up logs
-        //     steps {
-        //         bat 'del /F /Q C:\\ProgramData\\DockerDesktop\\containers\\*.log'
-        //         echo 'Old logs cleaned up!'
-        //     }
-        // }
+        stage('Cleanup Old Logs') { //clean up logs
+            steps {
+                bat 'del /F /Q C:\\Users\\%USERNAME%\\AppData\\Local\\Docker\\log\\*.log'
+                bat 'del /F /Q C:\\Users\\%USERNAME%\\AppData\\Local\\Docker\\log\\host\\*.log'
+                echo 'Old logs cleaned up!'
+            }
+        }
         stage('Build and tag image') { //build image
             steps {
                 bat 'docker build --build-arg VERSION=%VERSION% -t %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION% .'
@@ -57,9 +59,10 @@ pipeline {
                 bat 'docker-compose up -d'
             }
         }
-        stage('Clean up unused image') { //remove unused docker image
+        stage('Clean up unused image and volumes') { //remove unused docker image and volumes
             steps {
                 bat 'docker system prune -f'
+                bat 'docker-compose down --volumes'
                 echo 'Unused images cleaned!'
             }
         }
