@@ -18,7 +18,7 @@ pipeline {
         GOOGLE_CLIENT_SECRET=credentials('GOOGLE_CLIENT_SECRET') 
 
         //for sonarqube
-        SONARQUBE_URL = 'http;//localhost:9000'
+        SONARQUBE_URL = 'http://localhost:9000'
         SONARQUBE_TOKEN=credentials('SONARQUBE_TOKEN') 
 
         //me
