@@ -35,7 +35,7 @@ pipeline {
         // }
         stage('Build and tag image') { //build image
             steps {
-                bat 'docker build --build-arg VERSION=%VERSION% -t DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION% .'
+                bat 'docker build --build-arg VERSION=%VERSION% -t %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION% .'
                 echo 'build'
             }
         }
