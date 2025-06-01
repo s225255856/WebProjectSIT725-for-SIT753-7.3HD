@@ -9,6 +9,8 @@ pipeline {
         DOCKER_REGISTRY = 'docker.io/s225255856'
         IMAGE_NAME = '73hd-image'
         VERSION = "${BUILD_NUMBER}"
+        GOOGLE_CLIENT_ID=credentials('google-client-id') //get GOOGLE_CLIENT_ID
+        GOOGLE_CLIENT_SECRET=credentials('google-client-secret') //get GOOGLE_CLIENT_SECRET
     }
 
     stages {
@@ -39,7 +41,7 @@ pipeline {
         }
         stage('Test image') {
             steps {
-                bat 'docker run -p 3002:3000 %IMAGE_NAME%:%VERSION%'
+                bat 'docker run -p 3002:3000 -build-arg GOOGLE_CLIENT_ID=%GOOGLE_CLIENT_ID% %IMAGE_NAME%:%VERSION%'
             }
         }
         stage('Push to Registry') { //save
