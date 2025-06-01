@@ -6,13 +6,22 @@ pipeline {
     // }
 
     environment {
+        //for docker
         DOCKER_REGISTRY = 'docker.io/s225255856'
         IMAGE_NAME = '73hd-image'
         VERSION = "${BUILD_NUMBER}"
+
+        //for authentication
         MONGO_URI=credentials('MONGO_URI')
         JWT_SECRET=credentials('JWT_SECRET')
-        GOOGLE_CLIENT_ID=credentials('GOOGLE_CLIENT_ID') //get GOOGLE_CLIENT_ID
-        GOOGLE_CLIENT_SECRET=credentials('GOOGLE_CLIENT_SECRET') //get GOOGLE_CLIENT_SECRET
+        GOOGLE_CLIENT_ID=credentials('GOOGLE_CLIENT_ID') 
+        GOOGLE_CLIENT_SECRET=credentials('GOOGLE_CLIENT_SECRET') 
+
+        //for sonarqube
+        SONARQUBE_URL = 'http;//localhost:9000'
+        SONARQUBE_TOKEN = ''
+
+        //me
         USERNAME = 'Alex'
     }
 
@@ -93,9 +102,20 @@ pipeline {
         }
 
         //CODE QUALITY STAGE
-        stage('Code Quality') {
+
+        stage('Code health check') {
             steps {
+                withSonarQubeEnv('SonarQube') {
+                    bat 'sonar-scanner -Dsonar.projectKey=%SONARQUBE_TOKEN% -Dsonar.host.url=%SONARQUBE_URL%'
+                }
                 echo 'code quality'
+            }
+        }
+        stage('Quality gate') {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
 
