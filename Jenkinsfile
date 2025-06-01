@@ -41,7 +41,7 @@ pipeline {
         }
         stage('Test image') {
             steps {
-                bat 'docker run --rm %IMAGE_NAME%:%VERSION%'
+                bat 'docker run -e GOOGLE_CLIENT_ID=%GOOGLE_CLIENT_ID% %IMAGE_NAME%:%VERSION%'
             }
         }
         stage('Push to Registry') { //save
