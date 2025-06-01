@@ -27,26 +27,26 @@ pipeline {
 
         stage('Cleanup Old Logs') { //clean up logs
             steps {
-                bat 'rm -rf /var/lib/docker/containers/*/*-json.log'
+                bat 'del /F /Q C:\\ProgramData\\Docker\\containers\\*.log'
                 echo 'Old logs cleaned up!'
             }
         }
         stage('Build') { //build image
             steps {
-                bat 'docker build -t ${IMAGE_NAME}:${VERSION} .'
+                bat 'docker build -t %IMAGE_NAME%:%VERSION% .'
                 echo 'build'
             }
         }
         stage('Test image') {
             steps {
-                bat 'docker run -p 3000:3000 ${IMAGE_NAME}:${VERSION} .'
+                bat 'docker run -p 3000:3000 %IMAGE_NAME%:%VERSION% .'
             }
         }
         stage('Push to Registry') { //save
             steps {
                 withDockerRegistry([credentialsId: 'docker-credentials', url: 'https://index.docker.io/v1/']) {
-                    bat 'docker tag ${IMAGE_NAME}:${VERSION} ${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}'
-                    bat 'docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}'
+                    bat 'docker tag %IMAGE_NAME%:%VERSION% %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION%'
+                    bat 'docker push %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION%'
                 }
             }
         }
