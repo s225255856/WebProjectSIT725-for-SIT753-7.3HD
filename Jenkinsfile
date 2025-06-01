@@ -19,7 +19,7 @@ pipeline {
 
         //for sonarqube
         SONARQUBE_URL = 'http;//localhost:9000'
-        SONARQUBE_TOKEN = ''
+        SONARQUBE_TOKEN=credentials('SONARQUBE_TOKEN') 
 
         //me
         USERNAME = 'Alex'
