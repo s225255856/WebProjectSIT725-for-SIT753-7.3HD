@@ -44,7 +44,7 @@ pipeline {
         }
         stage('Push to Registry') {
             steps {
-                withDockerRegistry([credentialsId: 'docker-credentials']) {
+                withDockerRegistry([credentialsId: 'docker-credentials' url 'https://index.docker.io/v1/']) {
                     sh 'docker tag ${IMAGE_NAME}:${VERSION} ${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}'
                     sh 'docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}'
                 }
