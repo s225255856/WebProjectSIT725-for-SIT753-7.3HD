@@ -117,7 +117,9 @@ pipeline {
                 timeout(time: 1, unit: 'HOURS') {
                     script{
                         def qualityGate = waitForQualityGate()
-                        if (qualityGate.status != 'OK') {
+                        if (qualityGate.status == 'OK') {
+                            echo 'Quality Gate passed!'
+                        } else {
                             echo 'Quality Gate failed, check SonarQube Dashboard for issues'
                         }
                     }
