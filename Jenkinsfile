@@ -25,12 +25,12 @@ pipeline {
 
         //BUILD STAGE
 
-        stage('Cleanup Old Logs') { //clean up logs
-            steps {
-                bat 'del /F /Q C:\\ProgramData\\Docker\\containers\\*.log'
-                echo 'Old logs cleaned up!'
-            }
-        }
+        // stage('Cleanup Old Logs') { //clean up logs
+        //     steps {
+        //         bat 'del /F /Q C:\\Program File\\Docker\\containers\\*.log'
+        //         echo 'Old logs cleaned up!'
+        //     }
+        // }
         stage('Build') { //build image
             steps {
                 bat 'docker build -t %IMAGE_NAME%:%VERSION% .'
