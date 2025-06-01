@@ -33,25 +33,25 @@ pipeline {
         //         echo 'Old logs cleaned up!'
         //     }
         // }
-        // stage('Build') { //build image
-        //     steps {
-        //         bat 'docker build --build-arg GOOGLE_CLIENT_ID=%GOOGLE_CLIENT_ID% -t %IMAGE_NAME%:%VERSION% .'
-        //         echo 'build'
-        //     }
-        // }
+        stage('Build and tag image') { //build image
+            steps {
+                bat 'docker build --build-arg VERSION=%VERSION% -t DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION% .'
+                echo 'build'
+            }
+        }
         // stage('Test image') {
         //     steps {
         //         bat 'docker run -e GOOGLE_CLIENT_ID=%GOOGLE_CLIENT_ID% %IMAGE_NAME%:%VERSION%'
         //     }
         // }
-        // stage('Push to Registry') { //save
-        //     steps {
-        //         withDockerRegistry([credentialsId: 'docker-credentials', url: 'https://index.docker.io/v1/']) {
-        //             bat 'docker tag %IMAGE_NAME%:%VERSION% %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION%'
-        //             bat 'docker push %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION%'
-        //         }
-        //     }
-        // }
+        stage('Push to Registry') { //save
+            steps {
+                //withDockerRegistry([credentialsId: 'docker-credentials', url: 'https://index.docker.io/v1/']) {
+                    //bat 'docker tag %IMAGE_NAME%:%VERSION% %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION%'
+                    bat 'docker push %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION%'
+                //}
+            }
+        }
         stage('Deploy with Docker Compose') { //docker compose
             steps {
                 bat 'docker-compose up -d'
