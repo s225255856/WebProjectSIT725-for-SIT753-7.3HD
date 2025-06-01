@@ -42,7 +42,7 @@ pipeline {
                 sh 'docker run -p 3000:3000 ${IMAGE_NAME}:${VERSION} .'
             }
         }
-        stage('Push to Registry') {
+        stage('Push to Registry') { //save
             steps {
                 withDockerRegistry([credentialsId: 'docker-credentials', url: 'https://index.docker.io/v1/']) {
                     sh 'docker tag ${IMAGE_NAME}:${VERSION} ${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}'
@@ -50,7 +50,12 @@ pipeline {
                 }
             }
         }
-        stage('Deploy with Docker Compose') {
+        stage('Deploy with Docker Compose') { //docker compose
+            steps {
+                sh 'docker-compose up -d'
+            }
+        }
+        stage('Clean up unused image') { //remove unused docker image
             steps {
                 sh 'docker system prune -f'
                 echo 'Unused images cleaned!'
