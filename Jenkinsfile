@@ -105,7 +105,7 @@ pipeline {
 
         stage('Code health check') {
             steps {
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv('73hd') {
                     bat 'sonar-scanner -Dsonar.projectKey=%SONARQUBE_TOKEN% -Dsonar.host.url=%SONARQUBE_URL%'
                 }
                 echo 'code quality'
