@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Install') {
             steps {
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
@@ -27,37 +27,37 @@ pipeline {
 
         stage('Cleanup Old Logs') { //clean up logs
             steps {
-                sh 'rm -rf /var/lib/docker/containers/*/*-json.log'
+                bat 'rm -rf /var/lib/docker/containers/*/*-json.log'
                 echo 'Old logs cleaned up!'
             }
         }
         stage('Build') { //build image
             steps {
-                sh 'docker build -t ${IMAGE_NAME}:${VERSION} .'
+                bat 'docker build -t ${IMAGE_NAME}:${VERSION} .'
                 echo 'build'
             }
         }
         stage('Test image') {
             steps {
-                sh 'docker run -p 3000:3000 ${IMAGE_NAME}:${VERSION} .'
+                bat 'docker run -p 3000:3000 ${IMAGE_NAME}:${VERSION} .'
             }
         }
         stage('Push to Registry') { //save
             steps {
                 withDockerRegistry([credentialsId: 'docker-credentials', url: 'https://index.docker.io/v1/']) {
-                    sh 'docker tag ${IMAGE_NAME}:${VERSION} ${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}'
-                    sh 'docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}'
+                    bat 'docker tag ${IMAGE_NAME}:${VERSION} ${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}'
+                    bat 'docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}'
                 }
             }
         }
         stage('Deploy with Docker Compose') { //docker compose
             steps {
-                sh 'docker-compose up -d'
+                bat 'docker-compose up -d'
             }
         }
         stage('Clean up unused image') { //remove unused docker image
             steps {
-                sh 'docker system prune -f'
+                bat 'docker system prune -f'
                 echo 'Unused images cleaned!'
             }
         }
