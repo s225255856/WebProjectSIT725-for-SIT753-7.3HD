@@ -142,11 +142,15 @@ pipeline {
                 }
                 
                 //owasp dependencies check
-                dependencyCheck additionalArguments: '--format JSON'
+                dependencyCheck additionalArguments: '-o "./" -s "./" -f "ALL" --prettyPrint',
+                odcInstallation: 'OWASP-DC',
 
                 //snyk scan
-                snykSecurityCheck()
-                
+                snykSecurity(
+                    snykInstallation: 'Snyk',
+                    snykTokenId: '0689624f-29b8-4cf9-995b-dd98d51c2478'
+                )
+
                 echo 'security'
             }
         }
