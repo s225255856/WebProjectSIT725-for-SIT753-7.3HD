@@ -131,6 +131,22 @@ pipeline {
 
         stage('Security') { 
             steps {
+                //sonarqube security scan
+                script{
+                    def qualityGate = waitForQualityGate()
+                    if (qualityGate.status == 'OK') {
+                        echo 'Quality Gate passed!'
+                    } else {
+                        echo 'Quality Gate failed, check SonarQube Dashboard to check for security vulnerabilities'
+                    }
+                }
+                
+                //owasp dependencies check
+                dependencyCheck additionalArguments: '--format JSON'
+
+                //snyk scan
+                snykSecurityCheck()
+                
                 echo 'security'
             }
         }
