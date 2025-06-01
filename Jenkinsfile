@@ -72,9 +72,10 @@ pipeline {
         stage('Test') {
             steps {
                 bat 'npm test'
-                bat 'type test-results.xml'
+                //bat 'type test-results.xml'
                 echo 'test'
             }
+            //--reporter mocha-junit-reporter --reporter-options mochaFile=test-results.xml
             // post {
             //     always {
             //         junit '**/test-results.xml' //generates test reports
