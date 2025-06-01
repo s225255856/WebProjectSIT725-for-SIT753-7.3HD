@@ -10,7 +10,11 @@ services:
       - mongodb_data:/data/db
 
   app:
-    build: .
+    build: 
+      context: .
+      args:
+        VERSION: "${VERSION}"
+    image: 73hd-app:${VERSION}
     container_name: express_app
     restart: always
     depends_on:
