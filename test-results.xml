@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="0.817" tests="29" failures="3">
+  <testsuite name="Root Suite" timestamp="2025-06-01T09:38:42" tests="0" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Auth Middleware Unit Test" timestamp="2025-06-01T09:38:43" tests="1" file="C:\Users\Alex\Documents\GitHub\WebProjectSIT725-for-SIT753-7.3HD\test\auth.test.js" time="0.024" failures="0">
+    <testcase name="Auth Middleware Unit Test should respond 403 if no token provided" time="0.017" classname="should respond 403 if no token provided">
+    </testcase>
+  </testsuite>
+  <testsuite name="Auth Integration Tests" timestamp="2025-06-01T09:38:43" tests="0" file="C:\Users\Alex\Documents\GitHub\WebProjectSIT725-for-SIT753-7.3HD\test\auth.test.js" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="GET /api/users/" timestamp="2025-06-01T09:38:43" tests="1" file="C:\Users\Alex\Documents\GitHub\WebProjectSIT725-for-SIT753-7.3HD\test\auth.test.js" time="0.015" failures="0">
+    <testcase name="Auth Integration Tests GET /api/users/ should return all users" time="0.006" classname="should return all users">
+    </testcase>
+  </testsuite>
+  <testsuite name="GET /api/users/logout" timestamp="2025-06-01T09:38:43" tests="1" file="C:\Users\Alex\Documents\GitHub\WebProjectSIT725-for-SIT753-7.3HD\test\auth.test.js" time="0.003" failures="0">
+    <testcase name="Auth Integration Tests GET /api/users/logout should clear the token cookie and redirect" time="0.002" classname="should clear the token cookie and redirect">
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/users/signup" timestamp="2025-06-01T09:38:43" tests="4" file="C:\Users\Alex\Documents\GitHub\WebProjectSIT725-for-SIT753-7.3HD\test\auth.test.js" time="0.105" failures="0">
+    <testcase name="Auth Integration Tests POST /api/users/signup should register a new user" time="0.049" classname="should register a new user">
+    </testcase>
+    <testcase name="Auth Integration Tests POST /api/users/signup should not allow duplicate registration" time="0.004" classname="should not allow duplicate registration">
+    </testcase>
+    <testcase name="Auth Integration Tests POST /api/users/signup should fail if required fields are missing" time="0.002" classname="should fail if required fields are missing">
+    </testcase>
+    <testcase name="Auth Integration Tests POST /api/users/signup should fail if email is invalid format (optional)" time="0.047" classname="should fail if email is invalid format (optional)">
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/users/login" timestamp="2025-06-01T09:38:43" tests="1" file="C:\Users\Alex\Documents\GitHub\WebProjectSIT725-for-SIT753-7.3HD\test\auth.test.js" time="0.094" failures="0">
+    <testcase name="Auth Integration Tests POST /api/users/login should login a user with valid credentials" time="0.048" classname="should login a user with valid credentials">
+    </testcase>
+  </testsuite>
+  <testsuite name="PUT /api/users/settings" timestamp="2025-06-01T09:38:43" tests="2" file="C:\Users\Alex\Documents\GitHub\WebProjectSIT725-for-SIT753-7.3HD\test\auth.test.js" time="0.188" failures="0">
+    <testcase name="Auth Integration Tests PUT /api/users/settings should update user name and avatar" time="0.010" classname="should update user name and avatar">
+    </testcase>
+    <testcase name="Auth Integration Tests PUT /api/users/settings should update password correctly" time="0.088" classname="should update password correctly">
+    </testcase>
+  </testsuite>
+  <testsuite name="DELETE /api/users" timestamp="2025-06-01T09:38:43" tests="2" file="C:\Users\Alex\Documents\GitHub\WebProjectSIT725-for-SIT753-7.3HD\test\auth.test.js" time="0.093" failures="0">
+    <testcase name="Auth Integration Tests DELETE /api/users should soft delete the user" time="0.004" classname="should soft delete the user">
+    </testcase>
+    <testcase name="Auth Integration Tests DELETE /api/users should not delete without token" time="0.001" classname="should not delete without token">
+    </testcase>
+  </testsuite>
+  <testsuite name="Website API" timestamp="2025-06-01T09:38:43" tests="1" file="C:\Users\Alex\Documents\GitHub\WebProjectSIT725-for-SIT753-7.3HD\test\eventReminder.test.js" time="0.009" failures="0">
+    <testcase name="Website API returns status 200 to check if api works" time="0.008" classname="returns status 200 to check if api works">
+    </testcase>
+  </testsuite>
+  <testsuite name="Event Reminder Service" timestamp="2025-06-01T09:38:43" tests="4" file="C:\Users\Alex\Documents\GitHub\WebProjectSIT725-for-SIT753-7.3HD\test\eventReminder.test.js" time="0.007" failures="1">
+    <testcase name="Event Reminder Service &quot;before all&quot; hook for &quot;should return an empty array when no events are found&quot;" time="0.000" classname="&quot;before all&quot; hook for &quot;should return an empty array when no events are found&quot;">
+      <failure message="Project.deleteMany is not a function" type="TypeError"><![CDATA[TypeError: Project.deleteMany is not a function
+    at Context.<anonymous> (test\eventReminder.test.js:29:21)
+    at process.processImmediate (node:internal/timers:485:21)]]></failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="Secret Angel Socket Event Tests" timestamp="2025-06-01T09:38:43" tests="12" file="C:\Users\Alex\Documents\GitHub\WebProjectSIT725-for-SIT753-7.3HD\test\secretAngel.test.js" time="0.028" failures="2">
+    <testcase name="Secret Angel Socket Event Tests &quot;before all&quot; hook for &quot;should emit roomList on createGame&quot;" time="0.001" classname="&quot;before all&quot; hook for &quot;should emit roomList on createGame&quot;">
+      <failure message="listen EADDRINUSE: address already in use :::3000" type="Error"><![CDATA[Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1939:16)
+    at listenInCluster (node:net:1996:12)
+    at Server.listen (node:net:2101:7)
+    at Context.<anonymous> (test\secretAngel.test.js:18:16)
+    at process.processImmediate (node:internal/timers:485:21)]]></failure>
+    </testcase>
+    <testcase name="Secret Angel Socket Event Tests &quot;after all&quot; hook for &quot;should reveal results and emit resultsRevealed&quot;" time="0.000" classname="&quot;after all&quot; hook for &quot;should reveal results and emit resultsRevealed&quot;">
+      <failure message="Server is not running." type="Error"><![CDATA[Error [ERR_SERVER_NOT_RUNNING]: Server is not running.
+    at Server.close (node:net:2358:12)
+    at Object.onceWrapper (node:events:632:28)
+    at Server.emit (node:events:530:35)
+    at emitCloseNT (node:net:2418:8)
+    at processTicksAndRejections (node:internal/process/task_queues:89:21)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)]]></failure>
+    </testcase>
+  </testsuite>
+</testsuites>

@@ -71,7 +71,13 @@ pipeline {
 
         stage('Test') {
             steps {
+                bat 'npm test'
                 echo 'test'
+            }
+            post {
+                always {
+                    junit '**/test-results.xml' //generates test reports
+                }
             }
         }
 
