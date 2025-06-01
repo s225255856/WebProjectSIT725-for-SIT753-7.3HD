@@ -19,7 +19,8 @@ pipeline {
 
         //for sonarqube
         SONARQUBE_URL = 'http://localhost:9000'
-        SONARQUBE_TOKEN=credentials('SONARQUBE_TOKEN') 
+        SONARQUBE_TOKEN=credentials('SONARQUBE_TOKEN')
+        SONARQUBE_PROJECT_KEY=credentials('SONARQUBE_PROJECT_KEY')
 
         //me
         USERNAME = 'Alex'
@@ -106,7 +107,7 @@ pipeline {
         stage('Code health check') {
             steps {
                 withSonarQubeEnv('73hd') {
-                    bat 'sonar-scanner -Dsonar.projectKey=%SONARQUBE_TOKEN% -Dsonar.host.url=%SONARQUBE_URL%'
+                    bat 'sonar-scanner -Dsonar.projectKey=%SONARQUBE_PROJECT_KEY% -Dsonar.host.url=%SONARQUBE_URL%'
                 }
                 echo 'code quality'
             }
