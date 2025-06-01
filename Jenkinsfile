@@ -39,7 +39,7 @@ pipeline {
         }
         stage('Test image') {
             steps {
-                bat 'docker run -p 3002:3000 %IMAGE_NAME%:%VERSION% .'
+                bat 'docker run -p 3002:3000 %IMAGE_NAME%:%VERSION%'
             }
         }
         stage('Push to Registry') { //save
