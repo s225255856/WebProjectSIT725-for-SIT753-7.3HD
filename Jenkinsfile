@@ -9,8 +9,8 @@ pipeline {
         DOCKER_REGISTRY = 'docker.io/s225255856'
         IMAGE_NAME = '73hd-image'
         VERSION = "${BUILD_NUMBER}"
-        GOOGLE_CLIENT_ID=credentials('google-client-id') //get GOOGLE_CLIENT_ID
-        GOOGLE_CLIENT_SECRET=credentials('google-client-secret') //get GOOGLE_CLIENT_SECRET
+        GOOGLE_CLIENT_ID=credentials('GOOGLE_CLIENT_ID') //get GOOGLE_CLIENT_ID
+        GOOGLE_CLIENT_SECRET=credentials('GOOGLE_CLIENT_SECRET') //get GOOGLE_CLIENT_SECRET
     }
 
     stages {
