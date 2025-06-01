@@ -20,7 +20,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/s225255856/WebProjectSIT725-for-SIT753-7.3HD.git'
             }
         }
-        stage('Install') {
+        stage('Install Dependencies') {
             steps {
                 bat 'npm install'
             }
