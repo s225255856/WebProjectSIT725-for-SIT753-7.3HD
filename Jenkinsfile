@@ -35,13 +35,13 @@ pipeline {
         // }
         stage('Build') { //build image
             steps {
-                bat 'docker build -t %IMAGE_NAME%:%VERSION% .'
+                bat 'docker build --build-arg GOOGLE_CLIENT_ID=%GOOGLE_CLIENT_ID% -t %IMAGE_NAME%:%VERSION% .'
                 echo 'build'
             }
         }
         stage('Test image') {
             steps {
-                bat 'docker run --build-arg GOOGLE_CLIENT_ID=%GOOGLE_CLIENT_ID% %IMAGE_NAME%:%VERSION%'
+                bat 'docker run --rm %IMAGE_NAME%:%VERSION%'
             }
         }
         stage('Push to Registry') { //save
