@@ -29,7 +29,7 @@ pipeline {
 
         stage('Cleanup Old Logs') { //clean up logs
             steps {
-                bat 'del /F /Q C:\\ProgramData\\DockerDesk\\containers\\*.log'
+                bat 'del /F /Q C:\\ProgramData\\DockerDesktop\\containers\\*.log'
                 echo 'Old logs cleaned up!'
             }
         }
