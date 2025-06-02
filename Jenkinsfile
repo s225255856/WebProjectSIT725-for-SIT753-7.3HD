@@ -155,7 +155,7 @@ pipeline {
                 echo 'security'
             }
         }
-        stage('OWASP Dependencies Check') {  //API Key: 2261fd63-0ef2-441d-b234-b7216e723a74  
+        stage('OWASP Dependencies Check') {  //API Key: 1b0b17f7-9695-4893-853d-17beb0cba25d  
             steps {
                 //owasp dependencies check
                 dependencyCheck additionalArguments: ''' 
@@ -163,7 +163,7 @@ pipeline {
                     -s './'
                     -f 'ALL' 
                     --prettyPrint
-                    --nvdApiKey 2261fd63-0ef2-441d-b234-b7216e723a74''',
+                    --nvdApiKey 1b0b17f7-9695-4893-853d-17beb0cba25d''',
                 odcInstallation: 'OWASP-DC'
                 
                 //output
