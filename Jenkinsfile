@@ -30,6 +30,8 @@ pipeline {
     }
 
     stages {
+        //PROJECT SET UP STAGE
+
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/s225255856/WebProjectSIT725-for-SIT753-7.3HD.git'
