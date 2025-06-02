@@ -22,6 +22,9 @@ pipeline {
         SONARQUBE_TOKEN=credentials('SONARQUBE_TOKEN')
         SONARQUBE_PROJECT_KEY=credentials('SONARQUBE_PROJECT_KEY')
 
+        //for snyk
+        SNYK_TOKEN_ID=SONARQUBE_PROJECT_KEY=credentials('SNYK_TOKEN_ID')
+
         //me
         USERNAME = 'Alex'
     }
@@ -175,7 +178,7 @@ pipeline {
                 //snyk scan
                 snykSecurity(
                     snykInstallation: 'Snyk',
-                    snykTokenId: '0689624f-29b8-4cf9-995b-dd98d51c2478'
+                    snykTokenId: '%SNYK_TOKEN_ID%'
                 )
             }
         }
