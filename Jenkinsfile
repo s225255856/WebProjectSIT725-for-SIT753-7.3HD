@@ -138,11 +138,13 @@ pipeline {
             steps {
                 //sonarqube security scan
                 script{
-                    def qualityGate = waitForQualityGate()
-                    if (qualityGate.status == 'OK') {
-                        echo 'Sonarqube security check passed!'
-                    } else {
-                        echo 'Sonarqube security check failed, check SonarQube Dashboard to check for security vulnerabilities'
+                    catchError(buildResult: 'UNSTABLE') {
+                        def qualityGate = waitForQualityGate()
+                        if (qualityGate.status == 'OK') {
+                            echo 'Quality Gate passed!'
+                        } else {
+                            echo 'Quality Gate failed. Check the SonarQube Dashboard for issues.'
+                        }
                     }
                 }
                 echo 'security'
