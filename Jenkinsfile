@@ -23,7 +23,7 @@ pipeline {
         SONARQUBE_PROJECT_KEY=credentials('SONARQUBE_PROJECT_KEY')
 
         //for snyk
-        SNYK_TOKEN_ID=SONARQUBE_PROJECT_KEY=credentials('SNYK_TOKEN_ID')
+        SNYK_TOKEN_ID=credentials('SNYK_TOKEN_ID')
 
         //me
         USERNAME = 'Alex'
