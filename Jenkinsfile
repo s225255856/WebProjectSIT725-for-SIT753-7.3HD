@@ -155,14 +155,7 @@ pipeline {
                 odcInstallation: 'OWASP-DC'
                 
                 //output
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target',
-                    reportFiles: 'dependency-check-report.html',
-                    reportName: 'OWASP Dependency Check Report'
-                ])
+                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
         }
         stage('Snyk Security Scan') {
