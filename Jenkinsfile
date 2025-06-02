@@ -129,30 +129,31 @@ pipeline {
 
         //SECURITY STAGE 
 
-        stage('Security') { 
+        stage('Sonarqube Security Scan') { 
             steps {
                 //sonarqube security scan
                 script{
                     def qualityGate = waitForQualityGate()
                     if (qualityGate.status == 'OK') {
-                        echo 'Quality Gate passed!'
+                        echo 'Sonarqube security check passed!'
                     } else {
-                        echo 'Quality Gate failed, check SonarQube Dashboard to check for security vulnerabilities'
+                        echo 'Sonarqube security check failed, check SonarQube Dashboard to check for security vulnerabilities'
                     }
                 }
-                
-                //owasp dependencies check
-                dependencyCheck additionalArguments: '-o "./" -s "./" -f "ALL" --prettyPrint',
-                odcInstallation: 'OWASP-DC',
-
-                //snyk scan
-                snykSecurity(
-                    snykInstallation: 'Snyk',
-                    snykTokenId: '0689624f-29b8-4cf9-995b-dd98d51c2478'
-                )
-
                 echo 'security'
             }
+        }
+        stage('OWASP Dependencies Check') {
+            //owasp dependencies check
+            dependencyCheck additionalArguments: '-o "./" -s "./" -f "ALL" --prettyPrint',
+            odcInstallation: 'OWASP-DC',
+        }
+        stage('Snyk Security Scan') {
+            //snyk scan
+            snykSecurity(
+                snykInstallation: 'Snyk',
+                snykTokenId: '0689624f-29b8-4cf9-995b-dd98d51c2478'
+            )
         }
 
         //DEPLOY STAGE 
