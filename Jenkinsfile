@@ -202,12 +202,12 @@ pipeline {
         }
         stage('Create Release') {  
             steps {
-                octopusPushPackage toolId: "webprojectsit725_giftzy", releaseVersion: '1.0.0'
+                octopusCreateRelease project: "webprojectsit725_giftzy", releaseVersion: '1.0.0'
             }
         }
         stage('Release') { 
             steps {
-                octopusPushPackage toolId: "webprojectsit725_giftzy", environment: 'Production'
+                octopusDeployRelease project: "webprojectsit725_giftzy", environment: 'Production'
                 echo 'release'
             }
         }
