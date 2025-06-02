@@ -187,7 +187,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d --build'
+                bat 'docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d --build'
 
                 echo 'deploy'
             }
