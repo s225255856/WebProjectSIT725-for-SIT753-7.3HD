@@ -144,16 +144,29 @@ pipeline {
             }
         }
         stage('OWASP Dependencies Check') {
-            //owasp dependencies check
-            dependencyCheck additionalArguments: '-o "./" -s "./" -f "ALL" --prettyPrint',
-            odcInstallation: 'OWASP-DC',
+            steps {
+                //owasp dependencies check
+                dependencyCheck additionalArguments: '--scan target/', odcInstallation: 'owasp'
+                
+                //output
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'target',
+                    reportFiles: 'dependency-check-report.html',
+                    reportName: 'OWASP Dependency Check Report'
+                ])
+            }
         }
         stage('Snyk Security Scan') {
-            //snyk scan
-            snykSecurity(
-                snykInstallation: 'Snyk',
-                snykTokenId: '0689624f-29b8-4cf9-995b-dd98d51c2478'
-            )
+            steps{
+                //snyk scan
+                snykSecurity(
+                    snykInstallation: 'Snyk',
+                    snykTokenId: '0689624f-29b8-4cf9-995b-dd98d51c2478'
+                )
+            }
         }
 
         //DEPLOY STAGE 
