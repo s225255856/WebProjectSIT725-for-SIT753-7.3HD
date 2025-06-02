@@ -108,7 +108,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('73hd') {
                     bat '''
-                        set JAVA_OPTS=-Xmx10G -Xms6G -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="C:\\Users\\Alex\\Downloads\\sonarqube-25.5.0.107428\\sonarqube-25.5.0.107428"
+                        set JAVA_OPTS=-Xmx4G -Xms2G -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="C:\\Users\\Alex\\Downloads\\sonarqube-25.5.0.107428\\sonarqube-25.5.0.107428"
                         sonar-scanner -Dsonar.projectKey=%SONARQUBE_PROJECT_KEY% -Dsonar.host.url=%SONARQUBE_URL%
                     '''
                 }
