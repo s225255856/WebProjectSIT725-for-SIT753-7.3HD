@@ -13,6 +13,7 @@ services:
     build: 
       context: .
       args:
+        VERSION: "${VERSION}"
     image: 73hd-app:${VERSION}
     container_name: express_app
     restart: always
