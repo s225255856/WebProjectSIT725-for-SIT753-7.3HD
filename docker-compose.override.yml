@@ -21,6 +21,8 @@ services:
       - mongodb
     ports:
       - "3002:3000"
+    env_file:
+      - .env
     environment:
       ENV: test
       MONGO_URI: "mongodb://mongodb_container/SIT725GroupProject"
