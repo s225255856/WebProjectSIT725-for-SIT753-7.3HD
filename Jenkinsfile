@@ -38,69 +38,69 @@ pipeline {
             }
         }
 
-        //BUILD STAGE
+        // //BUILD STAGE
 
-        stage('Cleanup Old Logs') { //clean up logs
-            steps {
-                bat 'del /F /Q C:\\Users\\%USERNAME%\\AppData\\Local\\Docker\\log\\*.log'
-                bat 'del /F /Q C:\\Users\\%USERNAME%\\AppData\\Local\\Docker\\log\\host\\*.log'
-                echo 'Old logs cleaned up!'
-            }
-        }
-        stage('Build and tag image') { //build image 
-            steps {
-                bat 'docker build --build-arg VERSION=%VERSION% -t %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION% .'
-                echo 'build'
-            }
-        }
-        // stage('Test image') {
+        // stage('Cleanup Old Logs') { //clean up logs
         //     steps {
-        //         bat 'docker run -e GOOGLE_CLIENT_ID=%GOOGLE_CLIENT_ID% %IMAGE_NAME%:%VERSION%'
+        //         bat 'del /F /Q C:\\Users\\%USERNAME%\\AppData\\Local\\Docker\\log\\*.log'
+        //         bat 'del /F /Q C:\\Users\\%USERNAME%\\AppData\\Local\\Docker\\log\\host\\*.log'
+        //         echo 'Old logs cleaned up!'
         //     }
         // }
-        stage('Push to Registry') { //save
-            steps {
-                //withDockerRegistry([credentialsId: 'DOCKER_CRED', url: 'https://index.docker.io/v1/']) {
-                    //bat 'docker tag %IMAGE_NAME%:%VERSION% %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION%'
-                    bat 'docker push %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION%'
-                //}
-            }
-        }
-        stage('Deploy with Docker Compose') { //docker compose
-            steps {
-                bat 'docker-compose up -d'
-            }
-        }
-        stage('Clean up unused image and volumes') { //remove unused docker image and volumes
-            steps {
-                bat 'docker system prune -a -f'
-                bat 'docker-compose down --volumes'
-                echo 'Unused images cleaned!'
-            }
-        }
+        // stage('Build and tag image') { //build image 
+        //     steps {
+        //         bat 'docker build --build-arg VERSION=%VERSION% -t %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION% .'
+        //         echo 'build'
+        //     }
+        // }
+        // // stage('Test image') {
+        // //     steps {
+        // //         bat 'docker run -e GOOGLE_CLIENT_ID=%GOOGLE_CLIENT_ID% %IMAGE_NAME%:%VERSION%'
+        // //     }
+        // // }
+        // stage('Push to Registry') { //save
+        //     steps {
+        //         //withDockerRegistry([credentialsId: 'DOCKER_CRED', url: 'https://index.docker.io/v1/']) {
+        //             //bat 'docker tag %IMAGE_NAME%:%VERSION% %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION%'
+        //             bat 'docker push %DOCKER_REGISTRY%/%IMAGE_NAME%:%VERSION%'
+        //         //}
+        //     }
+        // }
+        // stage('Deploy with Docker Compose') { //docker compose
+        //     steps {
+        //         bat 'docker-compose up -d'
+        //     }
+        // }
+        // stage('Clean up unused image and volumes') { //remove unused docker image and volumes
+        //     steps {
+        //         bat 'docker system prune -a -f'
+        //         bat 'docker-compose down --volumes'
+        //         echo 'Unused images cleaned!'
+        //     }
+        // }
 
-        //TEST STAGE 
+        // //TEST STAGE 
 
-        stage('Test') {
-            steps {
-                catchError(buildResult: 'UNSTABLE') {
-                    bat 'npm test'
-                    bat 'type test-results.xml'
-                    echo 'test'
-                }
-            }
-            post {
-                always {
-                    junit '**/test-results.xml' //generates test reports
-                }
-                success {
-                    echo 'All test passed!'
-                }
-                failure {
-                    echo 'Some tests failed. Check test result for details.'
-                }
-            }
-        }
+        // stage('Test') {
+        //     steps {
+        //         catchError(buildResult: 'UNSTABLE') {
+        //             bat 'npm test'
+        //             bat 'type test-results.xml'
+        //             echo 'test'
+        //         }
+        //     }
+        //     post {
+        //         always {
+        //             junit '**/test-results.xml' //generates test reports
+        //         }
+        //         success {
+        //             echo 'All test passed!'
+        //         }
+        //         failure {
+        //             echo 'Some tests failed. Check test result for details.'
+        //         }
+        //     }
+        // }
 
         //CODE QUALITY STAGE
 
