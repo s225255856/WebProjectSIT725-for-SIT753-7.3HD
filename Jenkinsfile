@@ -205,7 +205,7 @@ pipeline {
                     packageFormat: 'zip', \
                     packageId: 'webprojectsit725', \
                     //packageVersion: '1.1.${BUILD_NUMBER}', \
-                    sourcePath: 'C:\\Users\\Alex\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\7.3HD', \
+                    sourcePath: 'C:\\Users\\Alex\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\7.3HD\\WebProjectSIT725-for-SIT753-7.3HD-main.zip', \
                     toolId: 'octocli', \
                     verboseLogging: false
             }
