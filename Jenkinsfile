@@ -146,7 +146,12 @@ pipeline {
         stage('OWASP Dependencies Check') {
             steps {
                 //owasp dependencies check
-                dependencyCheck additionalArguments: '--scan target/', odcInstallation: 'owasp'
+                dependencyCheck additionalArguments: ''' 
+                    -o './'
+                    -s './'
+                    -f 'ALL' 
+                    --prettyPrint''', 
+                odcInstallation: 'OWASP-DC'
                 
                 //output
                 publishHTML(target: [
