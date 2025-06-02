@@ -13,7 +13,6 @@ services:
     build: 
       context: .
       args:
-        VERSION: "${VERSION}"
     image: 73hd-app-test:${VERSION}
     container_name: express_app
     restart: always
@@ -21,9 +20,9 @@ services:
       - mongodb
     ports:
       - "3002:3000"
-    env_file:
-      - .env
     environment:
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID'}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET'}
       ENV: test
       MONGO_URI: "mongodb://mongodb_container/SIT725GroupProject"
 
