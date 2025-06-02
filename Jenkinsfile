@@ -76,7 +76,7 @@ pipeline {
                 bat 'docker-compose up -d'
             }
         }
-        stage('Clean up unused image and volumes') { //remove unused docker image and volumes
+        stage('Clean up unused images and volumes') { //remove unused docker image and volumes
             steps {
                 bat 'docker system prune -a -f'
                 bat 'docker-compose down --volumes'
