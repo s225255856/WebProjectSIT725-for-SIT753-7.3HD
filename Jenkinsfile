@@ -197,17 +197,54 @@ pipeline {
 
         stage('Push to Octopus Deploy') {  
             steps {
-                octopusPack packageId: "webprojectsit725id", packagePaths: '"C:\\Users\\Alex\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\7.3HD\\WebProjectSIT725-for-SIT753-7.3HD-main.zip"'
+                //octopusPack packageId: "webprojectsit725id", packagePaths: '"C:\\Users\\Alex\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\7.3HD\\WebProjectSIT725-for-SIT753-7.3HD-main.zip"'
+                octopusPack \
+                    //additionalArgs: '-author "My Company"', \
+                    //outputPath: './artifacts/', \
+                    //overwriteExisting: false, \
+                    packageFormat: 'zip', \
+                    packageId: 'webprojectsit725', \
+                    //packageVersion: '1.1.${BUILD_NUMBER}', \
+                    sourcePath: 'C:\\Users\\Alex\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\7.3HD', \
+                    toolId: 'octocli', \
+                    verboseLogging: false
             }
         }
         stage('Create Release') {  
             steps {
-                octopusCreateRelease project: "webprojectsit725_giftzy", releaseVersion: '1.0.0'
+                //octopusCreateRelease project: "webprojectsit725_giftzy", releaseVersion: '1.0.0'
+                octopusCreateRelease \
+                    serverId: 'octopus-server', \
+                    spaceId: 'Spaces-1', \
+                    project: 'webprojectsit725_giftzy', \
+                    releaseVersion: '2.3.${BUILD_NUMBER}', \
+                    toolId: 'octocli', \
+                    //packageConfigs: [[packageName: 'Nuget.CommandLine', packageReferenceName: 'NugetCLI', packageVersion: '5.5.1']], \
+                    //deployThisRelease: true, \
+                    //cancelOnTimeout: false, \
+                    //deploymentTimeout: '00:15:00', \
+                    //environment: 'test', \
+                    //tenant: 'The Tenant', \
+                    //tenantTag: 'importance/high', \
+                    //jenkinsUrlLinkback: true, \
+                    //releaseNotes: true, \
+                    //releaseNotesSource: 'scm'
             }
         }
         stage('Release') { 
             steps {
-                octopusDeployRelease project: "webprojectsit725_giftzy", environment: 'Production'
+                //octopusDeployRelease project: "webprojectsit725_giftzy", environment: 'Production'
+                octopusDeployRelease \
+                    toolId: 'octocli', \
+                    serverId: 'octopus-server', \
+                    spaceId: 'Spaces-1', \
+                    project: 'webprojectsit725_giftzy', \
+                    environment: 'Production', \
+                    releaseVersion: '1.2.${BUILD_NUMBER}', \
+                    //deploymentTimeout: '00:05:00', \
+                    //waitForDeployment: false, \
+                    //cancelOnTimeout: true
+
                 echo 'release'
             }
         }
