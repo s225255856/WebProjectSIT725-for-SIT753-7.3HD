@@ -165,7 +165,7 @@ pipeline {
                 odcInstallation: 'OWASP-DC'
                 
                 //output
-                //dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
                 publishHTML([
                     reportDir: '.',
                     reportFiles: 'dependency-check-report.html',
@@ -187,6 +187,8 @@ pipeline {
 
         stage('Deploy') {
             steps {
+                sh 'docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d --build'
+
                 echo 'deploy'
             }
         }

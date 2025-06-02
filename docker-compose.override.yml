@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb_container
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  app:
+    build: 
+      context: .
+      args:
+        VERSION: "${VERSION}"
+    image: 73hd-app:${VERSION}
+    container_name: express_app
+    restart: always
+    depends_on:
+      - mongodb
+    ports:
+      - "3002:3000"
+    environment:
+      ENV: test
+      MONGO_URI: "mongodb://mongodb_container/SIT725GroupProject"
+
+volumes:
+  mongodb_data:
