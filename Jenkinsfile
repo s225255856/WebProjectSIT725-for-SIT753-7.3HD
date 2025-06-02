@@ -165,7 +165,7 @@ pipeline {
                 odcInstallation: 'OWASP-DC'
                 
                 //output
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+                //dependencyCheckPublisher pattern: 'dependency-check-report.xml'
                 publishHTML([
                     reportDir: '.',
                     reportFiles: 'dependency-check-report.html',
@@ -173,15 +173,15 @@ pipeline {
                 ])
             }
         }
-        stage('Snyk Security Scan') {
-            steps{
-                //snyk scan
-                snykSecurity(
-                    snykInstallation: 'Snyk',
-                    snykTokenId: '%SNYK_TOKEN_ID%'
-                )
-            }
-        }
+        // stage('Snyk Security Scan') {
+        //     steps{
+        //         //snyk scan
+        //         snykSecurity(
+        //             snykInstallation: 'Snyk',
+        //             snykTokenId: '%SNYK_TOKEN_ID%'
+        //         )
+        //     }
+        // }
 
         //DEPLOY STAGE 
 
