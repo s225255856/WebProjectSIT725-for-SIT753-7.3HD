@@ -151,7 +151,7 @@ pipeline {
                     -s './'
                     -f 'ALL' 
                     --prettyPrint''', 
-                odcInstallation: 'OWASP-DC\\dependency-check\\bin'
+                odcInstallation: 'OWASP-DC'
                 
                 //output
                 publishHTML(target: [
