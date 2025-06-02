@@ -108,7 +108,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('73hd') {
                     bat '''
-                        set JAVA_OPTS=-Xmx8G -Xms4G
+                        set JAVA_OPTS=-Xmx10G -Xms6G -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="C:\\Users\\Alex\\Downloads\\sonarqube-25.5.0.107428\\sonarqube-25.5.0.107428"
                         sonar-scanner -Dsonar.projectKey=%SONARQUBE_PROJECT_KEY% -Dsonar.host.url=%SONARQUBE_URL%
                     '''
                 }
@@ -124,6 +124,9 @@ pipeline {
                             echo 'Quality Gate passed!'
                         } else {
                             echo 'Quality Gate failed, check SonarQube Dashboard for issues'
+                            catchError(buildResult: 'UNSTABLE') {
+                                echo 'Marking build as UNSTABLE, but continuing execution...'
+                            }
                         }
                     }
                 }
