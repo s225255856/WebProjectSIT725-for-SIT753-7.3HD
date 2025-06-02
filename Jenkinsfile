@@ -163,6 +163,11 @@ pipeline {
                 
                 //output
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+                publishHTML([
+                    reportDir: '.',
+                    reportFiles: 'dependency-check-report.html',
+                    reportName: 'OWASP Dependency Report'
+                ])
             }
         }
         stage('Snyk Security Scan') {
