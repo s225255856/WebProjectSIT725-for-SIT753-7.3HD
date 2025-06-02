@@ -119,13 +119,12 @@ pipeline {
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
                     script{
-                        def qualityGate = waitForQualityGate()
-                        if (qualityGate.status == 'OK') {
-                            echo 'Quality Gate passed!'
-                        } else {
-                            echo 'Quality Gate failed, check SonarQube Dashboard for issues'
-                            catchError(buildResult: 'UNSTABLE') {
-                                echo 'Marking build as UNSTABLE, but continuing execution...'
+                        catchError(buildResult: 'UNSTABLE') {
+                            def qualityGate = waitForQualityGate()
+                            if (qualityGate.status == 'OK') {
+                                echo 'Quality Gate passed!'
+                            } else {
+                                echo 'Quality Gate failed. Check the SonarQube Dashboard for issues.'
                             }
                         }
                     }
