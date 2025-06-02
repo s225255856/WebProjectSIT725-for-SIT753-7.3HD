@@ -21,8 +21,8 @@ services:
     ports:
       - "3002:3000"
     environment:
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID'}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET'}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       MONGO_URI: "mongodb://localhost:27017/SIT725GroupProject"
 
 volumes:
