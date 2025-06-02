@@ -14,7 +14,7 @@ services:
       context: .
       args:
         VERSION: "${VERSION}"
-    image: 73hd-app:${VERSION}
+    image: 73hd-app-test:${VERSION}
     container_name: express_app
     restart: always
     depends_on:
