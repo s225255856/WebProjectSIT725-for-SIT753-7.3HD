@@ -197,7 +197,7 @@ pipeline {
 
         stage('Push to Octopus Deploy') {  
             steps {
-                octopusPushPackage packageID: "webprojectsit725id", packagePath: 'C:\\Users\\Alex\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\7.3HD'
+                octopusPack packageID: "webprojectsit725id", packagePaths: '"C:\\Users\\Alex\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\7.3HD\\WebProjectSIT725-for-SIT753-7.3HD-main.zip"'
             }
         }
         stage('Create Release') {  
