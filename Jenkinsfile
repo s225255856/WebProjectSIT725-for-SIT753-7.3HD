@@ -108,7 +108,6 @@ pipeline {
             steps {
                 withSonarQubeEnv('73hd') {
                     bat '''
-                        set JAVA_OPTS=-Xmx8G -Xms4G
                         sonar-scanner -Dsonar.projectKey=%SONARQUBE_PROJECT_KEY% -Dsonar.host.url=%SONARQUBE_URL%
                     '''
                 }
