@@ -195,15 +195,26 @@ pipeline {
 
         //RELEASE STAGE
 
-        stage('Release') {
+        stage('Push to Octopus Deploy') {  
             steps {
+                octopusPushPackage packageID: "webprojectsit725id", packagePath: 'C:\\Users\\Alex\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\7.3HD'
+            }
+        }
+        stage('Create Release') {  
+            steps {
+                octopusPushPackage project: "webprojectsit725_giftzy", releaseVersion: '1.0.0'
+            }
+        }
+        stage('Release') { 
+            steps {
+                octopusPushPackage project: "webprojectsit725_giftzy", environment: 'Production'
                 echo 'release'
             }
         }
 
         //MONITORING STAGE
 
-        stage('Monitoring') {
+        stage('Monitoring') {  
             steps {
                 echo 'monitoring'
             }
