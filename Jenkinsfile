@@ -197,17 +197,17 @@ pipeline {
 
         stage('Push to Octopus Deploy') {  
             steps {
-                octopusPack packageID: "webprojectsit725id", packagePaths: '"C:\\Users\\Alex\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\7.3HD\\WebProjectSIT725-for-SIT753-7.3HD-main.zip"'
+                octopusPack packageId: "webprojectsit725id", packagePaths: '"C:\\Users\\Alex\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\7.3HD\\WebProjectSIT725-for-SIT753-7.3HD-main.zip"'
             }
         }
         stage('Create Release') {  
             steps {
-                octopusPushPackage project: "webprojectsit725_giftzy", releaseVersion: '1.0.0'
+                octopusPushPackage toolId: "webprojectsit725_giftzy", releaseVersion: '1.0.0'
             }
         }
         stage('Release') { 
             steps {
-                octopusPushPackage project: "webprojectsit725_giftzy", environment: 'Production'
+                octopusPushPackage toolId: "webprojectsit725_giftzy", environment: 'Production'
                 echo 'release'
             }
         }
